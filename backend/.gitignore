@@ -1,0 +1,15 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# Raw scraped PDFs are large (~270 MB) and re-downloadable via
+# ingestion/download_pdfs_browser.py. The DERIVED corpus/index/catalog
+# (the data the API actually serves) are kept in the repo.
+data/pdfs/*.pdf
+
+# Runtime audit log (regenerated at run time)
+data/audit/audit_log.jsonl
+
+# Probe/experiment scripts kept for reference, not part of the pipeline
+ingestion/_probes/

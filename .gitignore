@@ -1,0 +1,41 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Next.js build output
+.next/
+**/.next/
+out/
+
+# Python
+.venv/
+.venv*/
+**/.venv/
+__pycache__/
+**/__pycache__/
+*.pyc
+
+# Local env / secrets
+.env
+.env.local
+.env*.local
+
+# Backend generated / large artifacts
+# Raw scraped PDFs (~270 MB) are re-downloadable via ingestion/download_pdfs_browser.py.
+# The derived corpus/index/catalog ARE kept in the repo (they are the data the API serves).
+backend/data/pdfs/*.pdf
+backend/data/audit/audit_log.jsonl
+backend/ingestion/_probes/
+
+# Editor / build metadata
+tsconfig.tsbuildinfo
+**/tsconfig.tsbuildinfo
+
+# Throwaway screenshots from local testing
+*.png
+!frontend/public/**/*.png
+!**/rwanda-coat-of-arms.png
+
+# OS
+.DS_Store
+Thumbs.db

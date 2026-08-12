@@ -1,0 +1,44 @@
+{
+  "_note": "Comparative legislation references FOREIGN instruments (Kenya, Mauritius, Estonia, Korea). amategeko.gov.rw only holds Rwandan law, so these curated comparative summaries are the one dataset not scraped from it. In a production system this corpus would be fed from the East-African / Commonwealth legislative databases named in docs/04-data-and-integrations.md §35. relatedBillId points at a real draft or a real scraped law where applicable.",
+  "topics": [
+    {
+      "id": "topic-data-protection",
+      "name": "Data protection & cross-border transfer",
+      "relatedBillId": "bill-digital-governance",
+      "description": "How peer jurisdictions structure lawful bases for processing, breach notification and cross-border transfer of personal data.",
+      "countries": [
+        {"country": "Kenya", "countryCode": "KE", "instrument": "Data Protection Act, 2019", "provisionSummary": "Establishes an independent Data Commissioner; requires registration of data controllers and processors above a threshold.", "approachNote": "Independent regulator model with a registration regime, unlike a ministry-hosted authority."},
+        {"country": "Mauritius", "countryCode": "MU", "instrument": "Data Protection Act, 2017", "provisionSummary": "GDPR-aligned; transfers allowed only to countries with adequate protection or with the Commissioner's authorisation.", "approachNote": "Adequacy + prior authorisation, stricter than standard contractual clauses alone."},
+        {"country": "Estonia", "countryCode": "EE", "instrument": "Personal Data Protection Act (GDPR implementation)", "provisionSummary": "Direct application of the EU GDPR; breach notification within 72 hours to the Data Protection Inspectorate.", "approachNote": "Supranational harmonisation — the 72-hour standard the draft mirrors."},
+        {"country": "South Korea", "countryCode": "KR", "instrument": "Personal Information Protection Act (PIPA)", "provisionSummary": "One of the strictest consent regimes; mandatory notification to affected individuals and the PIPC.", "approachNote": "Consent-centric with dual notification (regulator and individuals)."}
+      ],
+      "aiTakeaway": "The 72-hour breach-notification window in the draft aligns with the Estonian/GDPR and Kenyan approaches; the main divergence among peers is whether the supervisory body is a fully independent commissioner (KE, MU) or hosted within government (as the draft's Digital Governance Authority currently is)."
+    },
+    {
+      "id": "topic-ai-governance",
+      "name": "AI accountability & automated decisions",
+      "relatedBillId": "bill-ai-governance",
+      "description": "Emerging approaches to human oversight of automated decision-making and accountability for public-sector AI.",
+      "countries": [
+        {"country": "Kenya", "countryCode": "KE", "instrument": "Draft National AI Strategy 2025", "provisionSummary": "Policy-level principles (transparency, fairness) rather than binding review obligations.", "approachNote": "Strategy-first, not yet statutory — Rwanda's draft would be ahead in creating binding duties."},
+        {"country": "Mauritius", "countryCode": "MU", "instrument": "AI Strategy / Council", "provisionSummary": "Advisory AI Council; sectoral guidance rather than a horizontal accountability statute.", "approachNote": "Institutional advisory model instead of enforceable per-institution officers."},
+        {"country": "Estonia", "countryCode": "EE", "instrument": "Kratt / Algorithmic accountability initiatives", "provisionSummary": "Emphasis on a legal-person status debate and government algorithm registers.", "approachNote": "Transparency-register approach — a complementary tool the draft omits."},
+        {"country": "South Korea", "countryCode": "KR", "instrument": "AI Framework Act, 2024", "provisionSummary": "Risk-tiered obligations; high-impact AI requires impact assessment and human oversight.", "approachNote": "Risk-tiering — the draft's 'high-impact system' officer duty resembles this but lacks the impact-assessment step."}
+      ],
+      "aiTakeaway": "The draft's requirement of a human-review step and an AI Accountability Officer is comparatively strong — most peers are still at strategy level. The notable gap versus Korea's Framework Act is the absence of a formal risk-tiered impact assessment before deployment."
+    },
+    {
+      "id": "topic-electronic-transactions",
+      "name": "Electronic transactions & signatures",
+      "relatedBillId": "law-electronic-transactions",
+      "description": "Legal recognition of electronic documents and signatures across comparable jurisdictions.",
+      "countries": [
+        {"country": "Kenya", "countryCode": "KE", "instrument": "Kenya Information and Communications Act (E-transactions Part)", "provisionSummary": "Recognises electronic records and advanced electronic signatures; functional-equivalence approach.", "approachNote": "Functional equivalence, closely comparable to the Rwandan law."},
+        {"country": "Mauritius", "countryCode": "MU", "instrument": "Electronic Transactions Act 2000", "provisionSummary": "Tiered signature reliability with accreditation of certification authorities.", "approachNote": "Formal CA accreditation regime, more prescriptive on reliability."},
+        {"country": "Estonia", "countryCode": "EE", "instrument": "eIDAS + national e-signature framework", "provisionSummary": "Qualified electronic signatures with legal equivalence to handwritten ones; national eID backbone.", "approachNote": "State eID infrastructure underpins signatures — an ecosystem the law alone doesn't create."},
+        {"country": "South Korea", "countryCode": "KR", "instrument": "Digital Signature Act (revised 2020)", "provisionSummary": "Abolished the monopoly of the national certificate; technology-neutral recognition.", "approachNote": "Technology-neutrality after de-monopolisation — a modernisation reference point."}
+      ],
+      "aiTakeaway": "Rwanda's functional-equivalence model matches Kenya's closely. The clearest lesson from Estonia and Korea is that signature law is only as effective as the surrounding eID/certification infrastructure and technology-neutrality — an implementation gap rather than a drafting one."
+    }
+  ]
+}

@@ -1,0 +1,968 @@
+<!doctype html>
+<title>Parliament AI System — Prototype</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+  :root {
+    --ink: #101f2f;
+    --ink-soft: #3f4663;
+    --ink-faint: #6e7f8c;
+    --navy-900: #101f2f;
+    --navy-800: #10272f;
+    --navy-700: #17303c;
+    --navy-600: #1f4250;
+    --paper: #f5faf7;
+    --paper-raised: #ffffff;
+    --paper-sunk: #eff7f1;
+    --line: #cedee4;
+    --line-soft: #e9faff;
+    --gold: #5bb581;
+    --gold-strong: #237a4e;
+    --gold-tint: #e9fff0;
+    --crimson: #c1443a;
+    --crimson-tint: #fbeae7;
+    --burnt: #ffb05b;
+    --burnt-tint: #fff2e0;
+    --slate: #3f6fa6;
+    --slate-tint: #e9faff;
+    --forest: #237a4e;
+    --forest-tint: #e9fff0;
+    --shadow-sm: 0 1px 2px rgba(16, 31, 47, 0.07);
+    --shadow-md: 0 1px 2px rgba(16, 31, 47, 0.07), 0 10px 26px -14px rgba(16, 31, 47, 0.28);
+    --serif: "Segoe UI", "Frutiger LT Std", "Myriad Pro", -apple-system, system-ui, "Helvetica Neue", Arial, sans-serif;
+    --sans: "Segoe UI", "Frutiger LT Std", "Myriad Pro", -apple-system, system-ui, "Helvetica Neue", Arial, sans-serif;
+    --mono: "Cascadia Code", "SFMono-Regular", Consolas, Menlo, monospace;
+    --sidebar-w: 244px;
+    --topbar-h: 60px;
+  }
+  :root[data-theme="dark"] {
+    --ink: #e9f3ed; --ink-soft: #adc2c9; --ink-faint: #7c93a0;
+    --paper: #0a121b; --paper-raised: #101f2f; --paper-sunk: #0d1b26;
+    --line: #223a48; --line-soft: #17303f;
+    --navy-900: #060b12; --navy-800: #101f2f; --navy-700: #16303d; --navy-600: #1c3b4a;
+    --gold: #6fcb98; --gold-strong: #8fe0b4; --gold-tint: #123322;
+    --crimson: #e8776c; --crimson-tint: #34201d;
+    --burnt: #ffc583; --burnt-tint: #3a2a14;
+    --slate: #8fc1f0; --slate-tint: #142433;
+    --forest: #6fcb98; --forest-tint: #123322;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.4);
+    --shadow-md: 0 1px 2px rgba(0,0,0,0.4), 0 12px 30px -16px rgba(0,0,0,0.7);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ink: #e9f3ed; --ink-soft: #adc2c9; --ink-faint: #7c93a0;
+      --paper: #0a121b; --paper-raised: #101f2f; --paper-sunk: #0d1b26;
+      --line: #223a48; --line-soft: #17303f;
+      --navy-900: #060b12; --navy-800: #101f2f; --navy-700: #16303d; --navy-600: #1c3b4a;
+      --gold: #6fcb98; --gold-strong: #8fe0b4; --gold-tint: #123322;
+      --crimson: #e8776c; --crimson-tint: #34201d;
+      --burnt: #ffc583; --burnt-tint: #3a2a14;
+      --slate: #8fc1f0; --slate-tint: #142433;
+      --forest: #6fcb98; --forest-tint: #123322;
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.4);
+      --shadow-md: 0 1px 2px rgba(0,0,0,0.4), 0 12px 30px -16px rgba(0,0,0,0.7);
+    }
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; height: 100%; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    line-height: 1.48;
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+  }
+  button, input, textarea, select { font-family: inherit; }
+  ::selection { background: var(--gold); color: #1b1f2e; }
+  .icon { width: 17px; height: 17px; stroke: currentColor; fill: none; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+
+  /* ============= LOGIN ============= */
+  #login {
+    position: fixed; inset: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: center;
+    background:
+      radial-gradient(720px 420px at 15% -10%, rgba(91,181,129,0.18), transparent 60%),
+      linear-gradient(160deg, var(--navy-900), var(--navy-700) 140%);
+    padding: 24px;
+  }
+  .login-card {
+    width: 100%; max-width: 420px;
+    background: var(--paper-raised);
+    border-radius: 16px;
+    border: 1px solid var(--line);
+    box-shadow: 0 30px 70px -30px rgba(0,0,0,0.55);
+    padding: 34px 32px 28px;
+  }
+  .login-crest { display: flex; align-items: center; gap: 11px; margin-bottom: 22px; }
+  .crest-mark {
+    width: 38px; height: 38px; border-radius: 9px;
+    background: linear-gradient(155deg, var(--navy-800), var(--navy-600));
+    display: flex; align-items: center; justify-content: center;
+    color: var(--gold); flex: none;
+  }
+  .login-crest .name { font-family: var(--serif); font-weight: 600; font-size: 16.5px; line-height: 1.15; }
+  .login-crest .sub { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); }
+  .login-card h1 { font-family: var(--serif); font-size: 23px; font-weight: 600; margin: 4px 0 6px; text-wrap: balance; }
+  .login-card > p.lede { color: var(--ink-soft); font-size: 13.5px; margin: 0 0 22px; }
+  .role-option {
+    display: flex; align-items: flex-start; gap: 12px;
+    width: 100%; text-align: left;
+    padding: 13px 14px; margin-bottom: 9px;
+    border-radius: 11px; border: 1px solid var(--line);
+    background: var(--paper); cursor: pointer;
+    transition: border-color .12s ease, background .12s ease, transform .12s ease;
+  }
+  .role-option:hover { border-color: var(--gold); background: var(--gold-tint); }
+  .role-option:active { transform: scale(0.99); }
+  .role-option .ricon { width: 34px; height: 34px; border-radius: 9px; display: flex; align-items: center; justify-content: center; flex: none; }
+  .role-option .rtext strong { display: block; font-size: 14px; margin-bottom: 2px; }
+  .role-option .rtext span { display: block; font-size: 12px; color: var(--ink-soft); }
+  .login-foot { margin-top: 18px; padding-top: 14px; border-top: 1px dashed var(--line); font-size: 11.5px; color: var(--ink-faint); font-family: var(--mono); }
+
+  /* ============= SHELL ============= */
+  #shell { display: none; height: 100%; }
+  #shell.active { display: block; }
+
+  #sidebar {
+    position: fixed; top: 0; left: 0; bottom: 0; width: var(--sidebar-w);
+    background: linear-gradient(185deg, var(--navy-900), var(--navy-800) 120%);
+    color: #e5f0ea;
+    display: flex; flex-direction: column;
+    border-right: 1px solid rgba(255,255,255,0.06);
+    z-index: 10;
+  }
+  .side-brand { display: flex; align-items: center; gap: 10px; padding: 18px 18px 16px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .side-brand .crest-mark { width: 32px; height: 32px; border-radius: 8px; }
+  .side-brand .name { font-family: var(--serif); font-size: 14.5px; font-weight: 600; line-height: 1.2; color: #eef7f2; }
+  .side-brand .sub { font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.08em; text-transform: uppercase; color: #8fa8a0; }
+
+  nav.side-nav { padding: 14px 10px; flex: 1; overflow-y: auto; }
+  .nav-group-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.09em; text-transform: uppercase; color: #6f8a86; padding: 10px 10px 6px; }
+  .nav-item {
+    display: flex; align-items: center; gap: 11px;
+    padding: 9px 11px; margin-bottom: 2px; border-radius: 9px;
+    color: #c3d6d1; font-size: 13.5px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.02em;
+    cursor: pointer; border: 1px solid transparent;
+    position: relative;
+  }
+  .nav-item:hover { background: rgba(255,255,255,0.06); color: #fff; }
+  .nav-item.active { background: rgba(91,181,129,0.16); color: #d7f5e4; border-color: rgba(91,181,129,0.35); }
+  .nav-item.active .icon { stroke: var(--gold); }
+  .nav-item .count {
+    margin-left: auto; font-family: var(--mono); font-size: 10.5px;
+    text-transform: none; letter-spacing: normal;
+    background: rgba(255,255,255,0.1); color: #c3d6d1;
+    padding: 1px 7px; border-radius: 100px;
+  }
+  .nav-item.active .count { background: var(--gold); color: #0d2b1c; }
+
+  .side-foot { padding: 14px 16px 16px; border-top: 1px solid rgba(255,255,255,0.08); }
+  .role-chip { display: flex; align-items: center; gap: 9px; font-size: 12.5px; }
+  .role-chip .dot { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+  .role-chip strong { display: block; color: #eef7f2; font-size: 12.5px; }
+  .role-chip span.rl { display: block; color: #9db3ad; font-size: 11px; }
+  .switch-role { margin-top: 10px; width: 100%; background: transparent; border: 1px solid rgba(255,255,255,0.15); color: #c3d6d1; font-size: 11.5px; padding: 6px 9px; border-radius: 7px; cursor: pointer; }
+  .switch-role:hover { border-color: var(--gold); color: var(--gold); }
+
+  #topbar {
+    position: fixed; top: 0; left: var(--sidebar-w); right: 0; height: var(--topbar-h);
+    background: var(--paper-raised); border-bottom: 1px solid var(--line);
+    display: flex; align-items: center; gap: 16px; padding: 0 22px;
+    z-index: 9;
+  }
+  .crumb { font-family: var(--serif); font-size: 17px; font-weight: 600; }
+  .crumb-sub { font-size: 12px; color: var(--ink-soft); margin-left: 10px; padding-left: 10px; border-left: 1px solid var(--line); }
+  .top-spacer { flex: 1; }
+  .lang-switch { display: flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+  .lang-switch button {
+    border: none; background: var(--paper); color: var(--ink-soft);
+    font-size: 11.5px; font-weight: 600; padding: 7px 10px; cursor: pointer;
+    border-right: 1px solid var(--line);
+  }
+  .lang-switch button:last-child { border-right: none; }
+  .lang-switch button.active { background: var(--navy-800); color: #e5f7ec; }
+  .top-role { display: flex; align-items: center; gap: 8px; padding: 6px 10px; border: 1px solid var(--line); border-radius: 100px; font-size: 12px; }
+  .top-role .dot { width: 7px; height: 7px; border-radius: 50%; }
+
+  #view {
+    position: absolute; top: var(--topbar-h); left: var(--sidebar-w); right: 0; bottom: 0;
+    overflow-y: auto;
+    padding: 26px 30px 60px;
+  }
+
+  /* ============= shared bits ============= */
+  .page-head { margin-bottom: 22px; }
+  .page-head h1 { font-family: var(--serif); font-size: 25px; font-weight: 600; margin: 0 0 5px; }
+  .page-head p { color: var(--ink-soft); font-size: 13.5px; margin: 0; max-width: 70ch; }
+
+  .grid { display: grid; gap: 16px; }
+  .cols-3 { grid-template-columns: repeat(3, 1fr); }
+  .cols-4 { grid-template-columns: repeat(4, 1fr); }
+  @media (max-width: 1100px) { .cols-3, .cols-4 { grid-template-columns: 1fr 1fr; } }
+
+  .card {
+    background: var(--paper-raised); border: 1px solid var(--line); border-radius: 13px;
+    box-shadow: var(--shadow-sm);
+  }
+  .stat-card { padding: 16px 18px; }
+  .stat-card .slabel { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-soft); margin: 0 0 8px; }
+  .stat-card .sval { font-family: var(--serif); font-size: 30px; font-weight: 600; font-variant-numeric: tabular-nums; margin: 0; }
+  .stat-card .sdelta { font-size: 11.5px; color: var(--ink-soft); margin-top: 4px; }
+  .stat-card .sdelta.up { color: var(--forest); } .stat-card .sdelta.warn { color: var(--crimson); }
+
+  .pill { display: inline-flex; align-items: center; gap: 5px; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.03em; padding: 3px 9px; border-radius: 100px; font-weight: 600; }
+  .pill.critical { background: var(--crimson-tint); color: var(--crimson); }
+  .pill.moderate { background: var(--burnt-tint); color: var(--burnt); }
+  .pill.minor { background: var(--slate-tint); color: var(--slate); }
+  .pill.ok { background: var(--forest-tint); color: var(--forest); }
+  .pill.neutral { background: var(--paper-sunk); color: var(--ink-soft); }
+
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { text-align: left; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-soft); font-weight: 600; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+  td { padding: 12px; border-bottom: 1px solid var(--line-soft); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  tr.rowhover:hover { background: var(--paper-sunk); cursor: pointer; }
+  .table-wrap { overflow-x: auto; }
+  .mono { font-family: var(--mono); font-size: 12px; color: var(--ink-soft); }
+
+  .btn {
+    display: inline-flex; align-items: center; gap: 7px;
+    font-size: 12.5px; font-weight: 600; padding: 8px 14px; border-radius: 8px;
+    border: 1px solid var(--line); background: var(--paper-raised); color: var(--ink);
+    cursor: pointer;
+  }
+  .btn:hover { border-color: var(--gold); }
+  .btn.primary { background: var(--navy-800); color: #e5f7ec; border-color: var(--navy-800); }
+  .btn.primary:hover { background: var(--navy-700); }
+  .btn.accept { background: var(--forest-tint); color: var(--forest); border-color: var(--forest); }
+  .btn.reject { background: var(--crimson-tint); color: var(--crimson); border-color: var(--crimson); }
+  .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+  .btn.sm { padding: 5px 10px; font-size: 11.5px; }
+
+  .section-title { font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); margin: 26px 0 12px; }
+  .section-title:first-child { margin-top: 0; }
+
+  /* ============= Assistant page ============= */
+  .assist-layout { display: grid; grid-template-columns: 250px 1fr; gap: 18px; height: calc(100vh - var(--topbar-h) - 150px); min-height: 480px; }
+  @media (max-width: 980px) { .assist-layout { grid-template-columns: 1fr; height: auto; } }
+  .kb-list { padding: 12px; overflow-y: auto; }
+  .kb-item { padding: 9px 10px; border-radius: 8px; font-size: 12.5px; margin-bottom: 3px; cursor: pointer; display: flex; gap: 8px; align-items: flex-start; }
+  .kb-item:hover { background: var(--paper-sunk); }
+  .kb-item .kb-tag { font-family: var(--mono); font-size: 9.5px; color: var(--ink-faint); }
+  .chat-col { display: flex; flex-direction: column; overflow: hidden; }
+  .chat-scroll { flex: 1; overflow-y: auto; padding: 18px 20px; display: flex; flex-direction: column; gap: 16px; }
+  .msg { max-width: 78%; }
+  .msg.user { align-self: flex-end; }
+  .msg.ai { align-self: flex-start; }
+  .msg .bubble { padding: 12px 14px; border-radius: 12px; font-size: 13.5px; line-height: 1.55; }
+  .msg.user .bubble { background: var(--navy-800); color: #eef7f2; border-bottom-right-radius: 3px; }
+  .msg.ai .bubble { background: var(--paper-sunk); border: 1px solid var(--line); border-bottom-left-radius: 3px; }
+  .cite-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .cite {
+    font-family: var(--mono); font-size: 10.5px; padding: 3px 8px;
+    border: 1px solid var(--gold); color: var(--gold-strong); border-radius: 100px;
+    background: var(--gold-tint);
+  }
+  .chat-input-row { display: flex; gap: 10px; padding: 14px 16px; border-top: 1px solid var(--line); }
+  .chat-input-row input { flex: 1; border: 1px solid var(--line); border-radius: 9px; padding: 10px 13px; font-size: 13.5px; background: var(--paper); color: var(--ink); }
+  .chat-input-row input:focus { outline: 2px solid var(--gold); outline-offset: 1px; }
+
+  /* ============= Duplication page ============= */
+  .split { display: grid; grid-template-columns: 1.1fr 1.4fr; gap: 18px; align-items: start; }
+  @media (max-width: 980px) { .split { grid-template-columns: 1fr; } }
+  .finding-item { padding: 13px 14px; border-bottom: 1px solid var(--line-soft); cursor: pointer; }
+  .finding-item:last-child { border-bottom: none; }
+  .finding-item:hover, .finding-item.active { background: var(--paper-sunk); }
+  .finding-item .ftitle { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+  .finding-item .fmeta { font-size: 11.5px; color: var(--ink-soft); display: flex; gap: 8px; align-items: center; }
+  .sim-bar { width: 54px; height: 5px; border-radius: 3px; background: var(--paper-sunk); overflow: hidden; display: inline-block; }
+  .sim-bar > div { height: 100%; background: var(--burnt); }
+
+  .clause-compare { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; padding: 18px; }
+  @media (max-width: 700px) { .clause-compare { grid-template-columns: 1fr; } }
+  .clause-box { background: var(--paper-sunk); border-radius: 10px; padding: 14px 15px; }
+  .clause-box h4 { margin: 0 0 8px; font-size: 12px; font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-soft); }
+  .clause-box p { font-size: 13.5px; margin: 0; font-family: var(--serif); line-height: 1.6; }
+  .clause-box mark { background: var(--gold-tint); color: var(--gold-strong); padding: 0 2px; border-radius: 3px; }
+
+  /* ============= Gaps page ============= */
+  .gap-layout { display: grid; grid-template-columns: 1.5fr 1fr; gap: 18px; align-items: start; }
+  @media (max-width: 980px) { .gap-layout { grid-template-columns: 1fr; } }
+  .bill-text { padding: 22px 26px; font-family: var(--serif); font-size: 15px; line-height: 1.85; }
+  .bill-text p { margin: 0 0 16px; }
+  .flagphrase { border-bottom: 2px solid; padding-bottom: 1px; cursor: pointer; position: relative; }
+  .flagphrase.critical { border-color: var(--crimson); background: var(--crimson-tint); }
+  .flagphrase.moderate { border-color: var(--burnt); background: var(--burnt-tint); }
+  .flagphrase.minor { border-color: var(--slate); background: var(--slate-tint); }
+  .flagphrase.resolved { border-color: var(--forest); background: transparent; opacity: 0.7; }
+
+  .issue-card { padding: 14px 15px; border-bottom: 1px solid var(--line-soft); }
+  .issue-card:last-child { border-bottom: none; }
+  .issue-head { display: flex; align-items: center; gap: 8px; margin-bottom: 7px; }
+  .issue-head .itxt { font-size: 12.5px; font-weight: 600; }
+  .issue-card p.desc { font-size: 12.5px; color: var(--ink-soft); margin: 0 0 8px; }
+  .issue-card .sugg { font-size: 12.5px; background: var(--paper-sunk); border-radius: 8px; padding: 9px 10px; margin-bottom: 10px; font-style: italic; font-family: var(--serif); }
+  .issue-actions { display: flex; gap: 8px; }
+  .issue-card.resolved-accepted { opacity: 0.65; }
+  .issue-card.resolved-rejected { opacity: 0.5; }
+  .resolved-note { font-family: var(--mono); font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .resolved-note.accepted { color: var(--forest); } .resolved-note.rejected { color: var(--crimson); }
+
+  /* ============= Comparative page ============= */
+  .country-card { padding: 16px 17px; }
+  .country-card .cflag { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--gold-strong); margin: 0 0 6px; }
+  .country-card h4 { margin: 0 0 8px; font-family: var(--serif); font-size: 16px; }
+  .country-card p { font-size: 13px; color: var(--ink-soft); margin: 0; }
+  .takeaway { margin-top: 22px; padding: 16px 18px; border-radius: 12px; background: var(--gold-tint); border: 1px solid var(--gold); }
+  .takeaway h4 { margin: 0 0 6px; font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--gold-strong); }
+  .takeaway p { margin: 0; font-size: 13.5px; }
+
+  select.bill-select { padding: 9px 12px; border: 1px solid var(--line); border-radius: 9px; background: var(--paper-raised); color: var(--ink); font-size: 13px; margin-bottom: 18px; min-width: 320px; }
+
+  footer.note { margin-top: 30px; padding-top: 16px; border-top: 1px dashed var(--line); font-size: 11.5px; color: var(--ink-faint); }
+</style>
+
+<!-- ============================================================ LOGIN ============================================================ -->
+<div id="login">
+  <div class="login-card">
+    <div class="login-crest">
+      <div class="crest-mark">
+        <svg class="icon" style="width:20px;height:20px" viewBox="0 0 24 24"><path d="M12 3v18M5 7l7-4 7 4M4 7l4 9a3 3 0 0 1-6 0l4-9zM20 7l4 9a3 3 0 0 1-6 0l4-9zM4 21h16"/></svg>
+      </div>
+      <div>
+        <div class="name">Parliament AI System</div>
+        <div class="sub">Legislative Intelligence · Prototype</div>
+      </div>
+    </div>
+    <h1>Sign in to the workspace</h1>
+    <p class="lede">Select the role you'd like to demo. Each role sees the same modules with different defaults and permissions.</p>
+    <div id="role-options"></div>
+    <div class="login-foot">Mock environment · No real parliamentary data · v0.1 prototype</div>
+  </div>
+</div>
+
+<!-- ============================================================ SHELL ============================================================ -->
+<div id="shell">
+  <aside id="sidebar">
+    <div class="side-brand">
+      <div class="crest-mark">
+        <svg class="icon" style="width:18px;height:18px;stroke:#8fe0b4" viewBox="0 0 24 24"><path d="M12 3v18M5 7l7-4 7 4M4 7l4 9a3 3 0 0 1-6 0l4-9zM20 7l4 9a3 3 0 0 1-6 0l4-9zM4 21h16"/></svg>
+      </div>
+      <div>
+        <div class="name">Parliament AI</div>
+        <div class="sub">Legislative Intelligence</div>
+      </div>
+    </div>
+    <nav class="side-nav" id="side-nav"></nav>
+    <div class="side-foot">
+      <div class="role-chip">
+        <span class="dot" id="role-dot"></span>
+        <div>
+          <strong id="role-name-chip"></strong>
+          <span class="rl" id="role-desc-chip"></span>
+        </div>
+      </div>
+      <button class="switch-role" id="switch-role-btn">Switch role / sign out</button>
+    </div>
+  </aside>
+
+  <div id="topbar">
+    <div class="crumb" id="crumb-title">Dashboard</div>
+    <div class="crumb-sub" id="crumb-sub"></div>
+    <div class="top-spacer"></div>
+    <div class="lang-switch" id="lang-switch">
+      <button data-lang="rw">RW</button>
+      <button data-lang="en">EN</button>
+      <button data-lang="fr">FR</button>
+    </div>
+    <div class="top-role">
+      <span class="dot" id="top-role-dot"></span>
+      <span id="top-role-name"></span>
+    </div>
+  </div>
+
+  <main id="view"></main>
+</div>
+
+<script>
+/* =========================================================================================
+   DATA
+   ========================================================================================= */
+const ROLES = {
+  mp:        { name: "MP / Legal Drafter", short:"Drafter", desc: "Full drafting & review access", color: "var(--slate)", icon: "pen", canDecide: true, home: "dashboard" },
+  staff:     { name: "Research & Committee Staff", short:"Researcher", desc: "Research & review, no edits", color: "var(--burnt)", icon: "search", canDecide: false, home: "assistant" },
+  oversight: { name: "Legislative Oversight Unit", short:"Oversight", desc: "System-wide audit access", color: "var(--forest)", icon: "shield", canDecide: true, home: "audit" },
+};
+
+const I18N = {
+  en: {
+    nav_dashboard: "Dashboard", nav_assistant: "Research & Drafting", nav_duplication: "Duplication Detection",
+    nav_gaps: "Gaps & Inconsistency", nav_comparative: "Comparative Legislation", nav_audit: "Audit Trail",
+    dash_title: "Dashboard", dash_sub: "Overview of active bills and items needing your attention.",
+    dash_stat_active: "Active bills", dash_stat_flags: "Open flagged issues", dash_stat_dup: "Unresolved overlaps", dash_stat_accept: "Suggestion acceptance rate",
+    dash_bills_title: "Bills in progress", dash_recent_title: "Recently flagged",
+    col_bill: "Bill", col_stage: "Stage", col_owner: "Owner", col_updated: "Updated", col_issues: "Open issues",
+    assist_title: "Research & Drafting Assistant", assist_sub: "Ask questions grounded in the parliamentary knowledge base. Every answer is cited.",
+    kb_title: "Knowledge base", send: "Send", ask_placeholder: "Ask about a law, article, or precedent…",
+    dup_title: "Duplication Detection", dup_sub: "Overlapping, contradictory, or repeated provisions across existing laws and draft bills.",
+    dup_findings: "Detected overlaps", dup_compare: "Clause comparison",
+    gaps_title: "Gaps, Inconsistency & Intent Alignment", gaps_sub: "Missing coverage, vague phrasing, and misaligned wording — flagged for your review.",
+    gaps_issues: "Flagged issues", accept: "Accept", reject: "Reject", comment: "Comment",
+    comp_title: "Comparative Legislation", comp_sub: "How peer countries frame equivalent provisions.",
+    audit_title: "Audit Trail", audit_sub: "Every AI suggestion and every human decision, in order.",
+    col_time: "Time", col_user: "User", col_module: "Module", col_action: "Action", col_detail: "Detail",
+    view_bill: "View bill", select_bill: "Select a bill",
+  },
+  fr: {
+    nav_dashboard: "Tableau de bord", nav_assistant: "Recherche et rédaction", nav_duplication: "Détection des doublons",
+    nav_gaps: "Lacunes et incohérences", nav_comparative: "Législation comparée", nav_audit: "Journal d'audit",
+    dash_title: "Tableau de bord", dash_sub: "Aperçu des projets de loi actifs et des éléments à traiter.",
+    dash_stat_active: "Projets de loi actifs", dash_stat_flags: "Problèmes signalés ouverts", dash_stat_dup: "Chevauchements non résolus", dash_stat_accept: "Taux d'acceptation des suggestions",
+    dash_bills_title: "Projets de loi en cours", dash_recent_title: "Récemment signalés",
+    col_bill: "Projet de loi", col_stage: "Étape", col_owner: "Responsable", col_updated: "Mis à jour", col_issues: "Problèmes ouverts",
+    assist_title: "Assistant de recherche et de rédaction", assist_sub: "Posez des questions fondées sur la base de connaissances parlementaire. Chaque réponse est citée.",
+    kb_title: "Base de connaissances", send: "Envoyer", ask_placeholder: "Interrogez une loi, un article, un précédent…",
+    dup_title: "Détection des doublons", dup_sub: "Dispositions se chevauchant, contradictoires ou répétées dans les lois et projets de loi.",
+    dup_findings: "Chevauchements détectés", dup_compare: "Comparaison des clauses",
+    gaps_title: "Lacunes, incohérences et alignement de l'intention", gaps_sub: "Couverture manquante et formulations imprécises — signalées pour examen.",
+    gaps_issues: "Problèmes signalés", accept: "Accepter", reject: "Rejeter", comment: "Commenter",
+    comp_title: "Législation comparée", comp_sub: "Comment les pays pairs formulent des dispositions équivalentes.",
+    audit_title: "Journal d'audit", audit_sub: "Chaque suggestion de l'IA et chaque décision humaine, dans l'ordre.",
+    col_time: "Heure", col_user: "Utilisateur", col_module: "Module", col_action: "Action", col_detail: "Détail",
+    view_bill: "Voir le projet de loi", select_bill: "Sélectionner un projet de loi",
+  },
+  rw: {
+    nav_dashboard: "Imbonerahamwe", nav_assistant: "Ubushakashatsi n'Iyandikwa", nav_duplication: "Kumenya Gusubiramo",
+    nav_gaps: "Icyuho n'Ibinyuranye", nav_comparative: "Amategeko Agereranywa", nav_audit: "Urutonde rw'Igenzura",
+    dash_title: "Imbonerahamwe", dash_sub: "Incamake y'amabwiriza akiri mu nzira n'ibisaba ubwitonzi bwawe.",
+    dash_stat_active: "Amabwiriza akora", dash_stat_flags: "Ibibazo bikiri bifunguye", dash_stat_dup: "Gusubiramo bitarakemuka", dash_stat_accept: "Igipimo cyo kwemeza ibyifuzo",
+    dash_bills_title: "Amabwiriza ari mu nzira", dash_recent_title: "Ibiherutse kumenyekanishwa",
+    col_bill: "Itegeko", col_stage: "Icyiciro", col_owner: "Ushinzwe", col_updated: "Byavuguruwe", col_issues: "Ibibazo bifunguye",
+    assist_title: "Umufasha w'Ubushakashatsi n'Iyandikwa", assist_sub: "Baza ibibazo bishingiye ku bubiko bw'ubumenyi bwa Inteko. Igisubizo cyose kigaragaza inkomoko.",
+    kb_title: "Ububiko bw'ubumenyi", send: "Ohereza", ask_placeholder: "Baza ku itegeko, ingingo, cyangwa urugero rwabanje…",
+    dup_title: "Kumenya Gusubiramo", dup_sub: "Ingingo zisubiramo, zinyuranyije, cyangwa zisa n'izindi mu mategeko n'amabwiriza.",
+    dup_findings: "Gusubiramo byabonetse", dup_compare: "Ugereranya ingingo",
+    gaps_title: "Icyuho, Ibinyuranye n'Intego", gaps_sub: "Ibitarateganyijwe n'amagambo adasobanutse — byagaragajwe kugira ngo ubisuzume.",
+    gaps_issues: "Ibibazo byagaragajwe", accept: "Emeza", reject: "Anga", comment: "Tanga igitekerezo",
+    comp_title: "Amategeko Agereranywa", comp_sub: "Uburyo ibindi bihugu bisobanura ingingo zisa.",
+    audit_title: "Urutonde rw'Igenzura", audit_sub: "Buri cyifuzo cya AI n'icyemezo cya buri muntu, mu rutonde.",
+    col_time: "Igihe", col_user: "Ukoresha", col_module: "Igice", col_action: "Igikorwa", col_detail: "Ibisobanuro",
+    view_bill: "Reba itegeko", select_bill: "Hitamo itegeko",
+  }
+};
+function t(key) { return (I18N[state.lang] && I18N[state.lang][key]) || I18N.en[key] || key; }
+
+const BILLS = [
+  { id: "b1", title: "Draft Law on Digital Governance and Data Protection", titleRw: "Umushinga w'Itegeko ku Miyoborere Rusange n'Kurengera Amakuru",
+    stage: "Committee review", owner: "U. Diane", updated: "2026-07-18", issues: 4, dup: 2, sponsor: "Chamber of Deputies" },
+  { id: "b2", title: "Draft Law Establishing the National Digital Skills Fund", titleRw: "Umushinga w'Itegeko Rishinga Ikigega cy'Igihugu cy'Ubumenyi mu Ikoranabuhanga",
+    stage: "AI quality pass", owner: "M. Eric", updated: "2026-07-17", issues: 2, dup: 1, sponsor: "Senate" },
+  { id: "b3", title: "Draft Law Amending the Law on Public Procurement Frameworks", titleRw: "Umushinga uhindura Itegeko rigenga Uburyo bw'Isoko rya Leta",
+    stage: "Drafting", owner: "K. Alice", updated: "2026-07-15", issues: 7, dup: 3, sponsor: "Chamber of Deputies" },
+  { id: "b4", title: "Draft Law on Cross-Border Data Flows and Cloud Infrastructure", titleRw: "Umushinga w'Itegeko ku Kwimura Amakuru hagati y'Ibihugu n'Ibikoresho bya Cloud",
+    stage: "Comparative benchmarking", owner: "U. Diane", updated: "2026-07-12", issues: 1, dup: 0, sponsor: "Chamber of Deputies" },
+  { id: "b5", title: "Draft Law on Youth Employment in the Digital Economy", titleRw: "Umushinga w'Itegeko ku Kazi k'Urubyiruko mu Bukungu bw'Ikoranabuhanga",
+    stage: "Tabled", owner: "M. Eric", updated: "2026-07-08", issues: 0, dup: 0, sponsor: "Senate" },
+];
+
+const KB_DOCS = [
+  { tag: "LAW · 2016", title: "Law N° 24/2016 on Information and Communication Technologies" },
+  { tag: "LAW · 2021", title: "Law Determining the Organisation of Data Protection and Privacy" },
+  { tag: "GAZETTE · 2023", title: "Official Gazette — Public Procurement Amendments" },
+  { tag: "HANSARD · 2025", title: "Committee on ICT — Session Minutes, March 2025" },
+  { tag: "REPORT · 2024", title: "Committee Report on Digital Skills Development" },
+  { tag: "LAW · 2018", title: "Law Governing Electronic Transactions and Signatures" },
+  { tag: "DRAFT · Active", title: "Draft Law on Digital Governance (current working copy)" },
+];
+
+const CHAT_SEED = [
+  { role: "ai", text: "Good afternoon. I'm scoped to the parliamentary knowledge base for the Digital Governance and Data Protection bill. Ask me about existing provisions, precedent, or ask me to draft a clause.", cites: [] },
+];
+
+function aiReply(question) {
+  const q = question.toLowerCase();
+  if (q.includes("data protection") || q.includes("privacy")) {
+    return { text: "Data protection is already substantively covered by the 2021 Law Determining the Organisation of Data Protection and Privacy, Articles 6–14 (lawful basis, consent, and data subject rights). Your draft's Section 3 overlaps with Article 9 on cross-border transfer conditions — I'd flag this for the duplication check rather than restating it here.", cites: ["Law 2021, Art. 9", "Law 2021, Art. 14"] };
+  }
+  if (q.includes("draft") || q.includes("clause") || q.includes("template")) {
+    return { text: "Here is a first draft of a definitions clause, filled from the standard legislative template and cross-checked for terms already defined elsewhere in Rwandan law:\n\n\"‘Digital infrastructure’ means any system, network, or facility used for the processing, storage, or transmission of electronic data, including cloud-hosted infrastructure operated on behalf of a public institution.\"\n\nThis is a suggestion only — please review before inserting it into the bill.", cites: ["Law N° 24/2016, Art. 2"] };
+  }
+  if (q.includes("precedent") || q.includes("committee")) {
+    return { text: "The ICT Committee considered a comparable clause in March 2025 regarding infrastructure oversight. The committee minutes note a request for clearer maintenance-obligation language — relevant if your draft includes similar infrastructure provisions.", cites: ["Hansard, ICT Committee, Mar 2025"] };
+  }
+  return { text: "I found related discussion in the knowledge base but nothing that directly answers this — I'd rather say that than guess. Try narrowing to a specific law, article, or bill section, or ask me to search the comparative legislation set.", cites: [] };
+}
+
+const DUPLICATION = {
+  b1: [
+    { id: "d1", clause: "Section 3.2 — Cross-border transfer of personal data", against: "Law 2021, Art. 9 — Conditions for cross-border data transfer", sim: 88,
+      textA: "Personal data may be transferred outside Rwanda where the recipient jurisdiction ensures an <mark>adequate level of protection</mark>, as determined by the relevant authority.",
+      textB: "Data may be transferred outside the national territory only where the receiving country guarantees an <mark>adequate level of protection</mark> equivalent to this Law." },
+    { id: "d2", clause: "Section 5.1 — Data subject access rights", against: "Law 2021, Art. 12 — Right of access", sim: 74,
+      textA: "A data subject shall have the right to <mark>request access to</mark> personal data held about them within thirty (30) days of a written request.",
+      textB: "Every data subject has the right to <mark>obtain confirmation and access to</mark> data concerning them, upon request to the controller." },
+  ],
+  b2: [
+    { id: "d3", clause: "Section 2.4 — Fund governance structure", against: "Law N° 24/2016, Art. 21 — ICT Development Fund governance", sim: 61,
+      textA: "The Fund shall be <mark>governed by a board</mark> appointed by the responsible Minister, comprising representatives of relevant sectors.",
+      textB: "The Development Fund shall be <mark>administered by a steering committee</mark> designated by the Minister in charge of ICT." },
+  ],
+  b3: [
+    { id: "d4", clause: "Art. 8 — Framework contract exemptions", against: "Umucyo Procurement Framework, Sched. 2", sim: 92,
+      textA: "Procuring entities may deviate from an existing framework contract where <mark>exceptional and duly justified circumstances</mark> apply, subject to prior approval.",
+      textB: "Deviation from framework contracts is permitted only under <mark>exceptional, duly justified circumstances</mark> approved in advance by the oversight authority." },
+    { id: "d5", clause: "Art. 11 — Supplier disqualification", against: "Public Procurement Law, Art. 33", sim: 55,
+      textA: "A supplier found in breach of contract terms may be <mark>disqualified from future tenders</mark> for a period determined by regulation.",
+      textB: "Suppliers in material breach shall be <mark>barred from participating in subsequent procurement</mark> processes as prescribed." },
+    { id: "d6", clause: "Art. 14 — Approval thresholds", against: "Ministerial Order N° 003/2022", sim: 68,
+      textA: "Procurements exceeding the prescribed threshold require <mark>prior written approval</mark> from the oversight body before award.",
+      textB: "Any procurement above the set threshold shall obtain <mark>written clearance</mark> in advance of contract award." },
+  ],
+  b4: [], b5: [],
+};
+
+const GAPS = {
+  b1: [
+    { id: "g1", severity: "critical", para: 1, phrase: "as deemed appropriate by the relevant authority",
+      desc: "Undefined discretionary standard — no criteria given for what qualifies as \"appropriate,\" creating an enforcement gap.",
+      suggestion: "Replace with a defined test, e.g. \"in accordance with the adequacy criteria set out in Article 9(2).\"" },
+    { id: "g2", severity: "moderate", para: 2, phrase: "reasonable technical measures",
+      desc: "\"Reasonable\" is not defined elsewhere in this bill or the 2021 Data Protection Law, risking inconsistent interpretation.",
+      suggestion: "Reference an existing standard (e.g. NISR data security guidelines) or define minimum measures explicitly." },
+    { id: "g3", severity: "minor", para: 3, phrase: "in a timely manner",
+      desc: "Vague timing — comparable clauses elsewhere in Rwandan law specify a fixed number of days.",
+      suggestion: "Consider a fixed period, e.g. \"within fifteen (15) working days,\" consistent with Article 12 of the 2021 Law." },
+    { id: "g4", severity: "moderate", para: 4, phrase: "may be shared with other institutions",
+      desc: "No coverage of which institutions, under what conditions, or with what safeguards — a scope gap likely to draw committee questions.",
+      suggestion: "Add a defined list or category of eligible institutions and require a data-sharing agreement." },
+  ],
+  b2: [
+    { id: "g5", severity: "moderate", para: 1, phrase: "eligible beneficiaries as determined by the Board",
+      desc: "Eligibility criteria delegated entirely to the Board with no minimum statutory guardrails.",
+      suggestion: "Set baseline eligibility criteria in the bill itself; allow the Board to add detail by regulation." },
+    { id: "g6", severity: "minor", para: 2, phrase: "periodic reporting",
+      desc: "No defined reporting frequency.",
+      suggestion: "Specify \"annual reporting to the responsible Minister and Parliament,\" matching similar fund-oversight clauses." },
+  ],
+  b3: [], b4: [], b5: [],
+};
+
+const COMPARATIVE = {
+  b1: {
+    topic: "Cross-border personal data transfer conditions",
+    countries: [
+      { flag: "Kenya", law: "Data Protection Act, 2019, Sec. 48", note: "Requires an adequacy decision by the Data Commissioner, or explicit consent plus contractual safeguards." },
+      { flag: "South Africa", law: "POPIA, Sec. 72", note: "Permits transfer where the recipient is subject to a law providing an adequate level of protection, or binding corporate rules." },
+      { flag: "European Union", law: "GDPR, Art. 44–46", note: "Tiered approach: adequacy decisions, standard contractual clauses, or binding corporate rules, with strict enforcement." },
+      { flag: "Ghana", law: "Data Protection Act, 2012, Sec. 18", note: "Requires the Data Protection Commission's approval unless an adequacy exemption applies." },
+    ],
+    takeaway: "Rwanda's draft aligns with the regional norm (Kenya, South Africa) of an adequacy-based test, but is less specific than the EU model on approved transfer mechanisms (e.g. standard contractual clauses). Consider whether to name approved mechanisms explicitly rather than relying solely on case-by-case adequacy determinations." },
+  b2: {
+    topic: "Public digital-skills fund governance",
+    countries: [
+      { flag: "Estonia", law: "Digital Agenda Fund Statute", note: "Governed by a cross-ministerial council with mandatory private-sector representation." },
+      { flag: "Kenya", law: "ICT Authority Fund Regulations", note: "Board appointed by Cabinet Secretary, annual parliamentary reporting required by statute." },
+      { flag: "India", law: "Digital India Fund Guidelines", note: "Steering committee chaired by the ministry, with state-level implementation bodies." },
+    ],
+    takeaway: "Most comparable funds statutorily require legislative reporting, which this draft currently leaves to Board discretion (see flagged gap g6). Strengthening this in the bill text would align with common practice and reduce oversight risk." },
+  b3: { topic: "Framework contract deviation approval", countries: [], takeaway: "No comparative set attached yet — recommend running this analysis before committee submission." },
+  b4: { topic: "Cloud infrastructure & data residency", countries: [
+      { flag: "Nigeria", law: "NDPA, Sec. 41", note: "Mandates local storage for government data unless an equivalency exemption is granted." },
+      { flag: "European Union", law: "GDPR + Data Act, 2023", note: "Residency not mandated generally, but sector-specific rules apply to critical infrastructure." },
+      { flag: "Kenya", law: "Data Protection Act, Sec. 50", note: "Requires at least one copy of certain data categories to be stored locally." },
+    ], takeaway: "A local-copy requirement for critical or sensitive categories (as in Kenya, Nigeria) is a common middle path between full residency mandates and unrestricted cloud use — worth considering for the infrastructure sections." },
+  b5: { topic: "Youth digital employment incentives", countries: [], takeaway: "No comparative set attached yet." },
+};
+
+const BILL_TEXT = {
+  b1: [
+    "This Law is established to regulate the collection, processing, and safeguarding of personal data within the digital economy, subject to conditions and exemptions as deemed appropriate by the relevant authority, and to define the responsibilities of public and private data controllers operating in the Republic of Rwanda.",
+    "Every institution processing personal data shall implement reasonable technical measures to prevent unauthorised access, in accordance with regulations issued by the responsible authority.",
+    "A data subject shall be informed of any breach affecting their personal data in a timely manner, and shall retain the right to lodge a complaint with the National Data Protection Authority.",
+    "Personal data collected under this Law may be shared with other institutions for purposes compatible with the original collection, subject to conditions determined by the responsible Minister.",
+  ],
+  b2: [
+    "The National Digital Skills Fund shall provide financial support to eligible beneficiaries as determined by the Board, in line with the objectives set out in Article 2 of this Law.",
+    "The Fund's management shall submit periodic reporting on disbursements, training outcomes, and remaining balance, in a form determined by the Board.",
+  ],
+};
+const BILL_TEXT_PLACEHOLDER = "Full paragraph-level text for this bill has not yet been ingested into the knowledge base for annotation. Duplication and comparative analysis below draw on the sections already indexed.";
+
+const AUDIT = [
+  { time: "2026-07-18 14:22", user: "U. Diane", role: "mp", module: "Gaps & Inconsistency", action: "Accepted suggestion g1", detail: "Bill b1 · replaced discretionary standard with defined test" },
+  { time: "2026-07-18 14:19", user: "U. Diane", role: "mp", module: "Duplication Detection", action: "Reviewed overlap d1", detail: "Bill b1 · 88% similarity vs Law 2021 Art. 9 — no action taken yet" },
+  { time: "2026-07-18 11:03", user: "M. Eric", role: "staff", module: "Research & Drafting", action: "Asked assistant a question", detail: "\"What precedent exists for infrastructure maintenance obligations?\"" },
+  { time: "2026-07-17 16:47", user: "U. Diane", role: "mp", module: "Comparative Legislation", action: "Viewed comparative set", detail: "Bill b1 · cross-border transfer benchmarking (4 countries)" },
+  { time: "2026-07-17 09:12", user: "K. Alice", role: "mp", module: "Gaps & Inconsistency", action: "Rejected suggestion", detail: "Bill b3 · flagged phrasing retained after legal review" },
+  { time: "2026-07-16 15:30", user: "System", role: "oversight", module: "Duplication Detection", action: "Automated scan completed", detail: "Bill b3 · 3 overlaps detected against procurement framework" },
+  { time: "2026-07-15 10:05", user: "M. Eric", role: "staff", module: "Research & Drafting", action: "Requested translation", detail: "Committee report summary translated EN → RW" },
+];
+
+/* =========================================================================================
+   ICONS
+   ========================================================================================= */
+const ICONS = {
+  dashboard: `<svg class="icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>`,
+  assistant: `<svg class="icon" viewBox="0 0 24 24"><path d="M4 5h16v11H8l-4 4V5z"/><path d="M8 9h8M8 12h5"/></svg>`,
+  duplication: `<svg class="icon" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="1.5"/><path d="M4 16V5a1 1 0 0 1 1-1h11"/></svg>`,
+  gaps: `<svg class="icon" viewBox="0 0 24 24"><path d="M12 3 2 20h20L12 3z"/><path d="M12 10v4"/><circle cx="12" cy="17" r="0.6" fill="currentColor" stroke="none"/></svg>`,
+  comparative: `<svg class="icon" viewBox="0 0 24 24"><path d="M12 3v18M5 8l-3 6a3.2 3.2 0 0 0 6 0l-3-6zM19 8l-3 6a3.2 3.2 0 0 0 6 0l-3-6zM5 8h5M14 8h5M8 21h8"/></svg>`,
+  audit: `<svg class="icon" viewBox="0 0 24 24"><path d="M9 4h9a1 1 0 0 1 1 1v15l-4-3-3 3-3-3-4 3V8l4-4z"/><path d="M9 4v4H5"/></svg>`,
+  pen: `<svg class="icon" viewBox="0 0 24 24"><path d="m14 4 6 6-9.5 9.5H4v-6.5L14 4z"/></svg>`,
+  search: `<svg class="icon" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m20 20-4.3-4.3"/></svg>`,
+  shield: `<svg class="icon" viewBox="0 0 24 24"><path d="M12 3 4 6v6c0 5 3.4 8.4 8 9 4.6-.6 8-4 8-9V6l-8-3z"/></svg>`,
+};
+
+/* =========================================================================================
+   STATE
+   ========================================================================================= */
+const state = {
+  role: null, lang: "en", route: "dashboard",
+  billFocus: { assistant: "b1", duplication: "b1", gaps: "b1", comparative: "b1" },
+  gapStatus: {}, dupActive: {},
+  chat: JSON.parse(JSON.stringify(CHAT_SEED)),
+};
+
+const NAV = [
+  { route: "dashboard", key: "nav_dashboard", icon: "dashboard" },
+  { route: "assistant", key: "nav_assistant", icon: "assistant" },
+  { route: "duplication", key: "nav_duplication", icon: "duplication", count: () => sumBills("dup") },
+  { route: "gaps", key: "nav_gaps", icon: "gaps", count: () => sumBills("issues") },
+  { route: "comparative", key: "nav_comparative", icon: "comparative" },
+  { route: "audit", key: "nav_audit", icon: "audit" },
+];
+function sumBills(field) { return BILLS.reduce((a, b) => a + b[field], 0); }
+function billById(id) { return BILLS.find(b => b.id === id); }
+function billLabel(b) { return state.lang === "rw" ? b.titleRw : b.title; }
+
+/* =========================================================================================
+   LOGIN
+   ========================================================================================= */
+function renderLogin() {
+  const el = document.getElementById("role-options");
+  el.innerHTML = Object.entries(ROLES).map(([key, r]) => `
+    <button class="role-option" data-role="${key}">
+      <div class="ricon" style="background:${r.color}22;color:${r.color}">${ICONS[r.icon]}</div>
+      <div class="rtext"><strong>${r.name}</strong><span>${r.desc}</span></div>
+    </button>
+  `).join("");
+  el.querySelectorAll(".role-option").forEach(btn => {
+    btn.addEventListener("click", () => {
+      state.role = btn.dataset.role;
+      state.route = ROLES[state.role].home;
+      document.getElementById("login").style.display = "none";
+      document.getElementById("shell").classList.add("active");
+      renderShell();
+    });
+  });
+}
+
+/* =========================================================================================
+   SHELL
+   ========================================================================================= */
+function renderShell() {
+  const role = ROLES[state.role];
+  document.getElementById("side-nav").innerHTML = NAV.map(n => `
+    <div class="nav-item ${state.route === n.route ? "active" : ""}" data-route="${n.route}">
+      ${ICONS[n.icon]}<span>${t(n.key)}</span>
+      ${n.count ? `<span class="count">${n.count()}</span>` : ""}
+    </div>
+  `).join("");
+  document.querySelectorAll(".nav-item").forEach(item => {
+    item.addEventListener("click", () => { state.route = item.dataset.route; renderShell(); });
+  });
+
+  document.getElementById("role-dot").style.background = role.color;
+  document.getElementById("role-name-chip").textContent = role.name;
+  document.getElementById("role-desc-chip").textContent = role.desc;
+  document.getElementById("top-role-dot").style.background = role.color;
+  document.getElementById("top-role-name").textContent = role.short;
+
+  document.querySelectorAll(".lang-switch button").forEach(b => {
+    b.classList.toggle("active", b.dataset.lang === state.lang);
+    b.onclick = () => { state.lang = b.dataset.lang; renderShell(); };
+  });
+
+  document.getElementById("switch-role-btn").onclick = () => {
+    state.role = null;
+    document.getElementById("shell").classList.remove("active");
+    document.getElementById("login").style.display = "flex";
+  };
+
+  renderRoute();
+}
+
+function setCrumb(title, sub) {
+  document.getElementById("crumb-title").textContent = title;
+  document.getElementById("crumb-sub").textContent = sub || "";
+}
+
+function renderRoute() {
+  const view = document.getElementById("view");
+  view.scrollTop = 0;
+  const renderers = { dashboard: renderDashboard, assistant: renderAssistant, duplication: renderDuplication, gaps: renderGaps, comparative: renderComparative, audit: renderAudit };
+  renderers[state.route](view);
+}
+
+/* =========================================================================================
+   DASHBOARD
+   ========================================================================================= */
+function renderDashboard(view) {
+  setCrumb(t("dash_title"), ROLES[state.role].name);
+  const acceptRate = 78;
+  view.innerHTML = `
+    <div class="page-head"><h1>${t("dash_title")}</h1><p>${t("dash_sub")}</p></div>
+    <div class="grid cols-4">
+      <div class="card stat-card"><p class="slabel">${t("dash_stat_active")}</p><p class="sval">${BILLS.length}</p><p class="sdelta">Across 2 chambers</p></div>
+      <div class="card stat-card"><p class="slabel">${t("dash_stat_flags")}</p><p class="sval">${sumBills("issues")}</p><p class="sdelta warn">3 critical</p></div>
+      <div class="card stat-card"><p class="slabel">${t("dash_stat_dup")}</p><p class="sval">${sumBills("dup")}</p><p class="sdelta">2 above 85% similarity</p></div>
+      <div class="card stat-card"><p class="slabel">${t("dash_stat_accept")}</p><p class="sval">${acceptRate}%</p><p class="sdelta up">of AI suggestions, 30d</p></div>
+    </div>
+
+    <div class="section-title">${t("dash_bills_title")}</div>
+    <div class="card table-wrap">
+      <table>
+        <thead><tr><th>${t("col_bill")}</th><th>${t("col_stage")}</th><th>${t("col_owner")}</th><th>${t("col_updated")}</th><th>${t("col_issues")}</th></tr></thead>
+        <tbody>
+          ${BILLS.map(b => `
+            <tr class="rowhover" data-goto="gaps" data-bill="${b.id}">
+              <td><strong>${billLabel(b)}</strong><div class="mono">${b.sponsor}</div></td>
+              <td><span class="pill neutral">${b.stage}</span></td>
+              <td>${b.owner}</td>
+              <td class="mono">${b.updated}</td>
+              <td>${b.issues ? `<span class="pill moderate">${b.issues} open</span>` : `<span class="pill ok">clear</span>`}</td>
+            </tr>`).join("")}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section-title">${t("dash_recent_title")}</div>
+    <div class="grid cols-3">
+      ${GAPS.b1.slice(0,3).map(g => `
+        <div class="card" style="padding:15px 16px">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+            <span class="pill ${g.severity}">${g.severity}</span>
+            <span class="mono" style="font-size:11px">${billById("b1").title.slice(0,28)}…</span>
+          </div>
+          <p style="font-size:13px;margin:0">${g.desc}</p>
+        </div>`).join("")}
+    </div>
+  `;
+  view.querySelectorAll("[data-goto]").forEach(row => row.addEventListener("click", () => {
+    state.route = row.dataset.goto; state.billFocus.gaps = row.dataset.bill; renderShell();
+  }));
+}
+
+/* =========================================================================================
+   ASSISTANT
+   ========================================================================================= */
+function renderAssistant(view) {
+  setCrumb(t("assist_title"));
+  view.innerHTML = `
+    <div class="page-head"><h1>${t("assist_title")}</h1><p>${t("assist_sub")}</p></div>
+    <div class="assist-layout">
+      <div class="card kb-list">
+        <div class="section-title" style="margin-top:0">${t("kb_title")}</div>
+        ${KB_DOCS.map(d => `<div class="kb-item"><span>📄</span><div><div>${d.title}</div><div class="kb-tag">${d.tag}</div></div></div>`).join("")}
+      </div>
+      <div class="card chat-col">
+        <div class="chat-scroll" id="chat-scroll">${renderChatMessages()}</div>
+        <div class="chat-input-row">
+          <input id="chat-input" type="text" placeholder="${t("ask_placeholder")}" />
+          <button class="btn primary" id="chat-send">${t("send")}</button>
+        </div>
+      </div>
+    </div>
+  `;
+  view.querySelectorAll(".kb-item").forEach(el => el.style.cursor = "default");
+  const send = () => {
+    const input = document.getElementById("chat-input");
+    const q = input.value.trim();
+    if (!q) return;
+    state.chat.push({ role: "user", text: q, cites: [] });
+    const reply = aiReply(q);
+    state.chat.push({ role: "ai", text: reply.text, cites: reply.cites });
+    input.value = "";
+    document.getElementById("chat-scroll").innerHTML = renderChatMessages();
+    document.getElementById("chat-scroll").scrollTop = 999999;
+  };
+  document.getElementById("chat-send").addEventListener("click", send);
+  document.getElementById("chat-input").addEventListener("keydown", e => { if (e.key === "Enter") send(); });
+}
+function renderChatMessages() {
+  return state.chat.map(m => `
+    <div class="msg ${m.role}">
+      <div class="bubble">${m.text.replace(/\n/g,"<br>")}</div>
+      ${m.cites && m.cites.length ? `<div class="cite-row">${m.cites.map(c => `<span class="cite">${c}</span>`).join("")}</div>` : ""}
+    </div>`).join("");
+}
+
+/* =========================================================================================
+   DUPLICATION
+   ========================================================================================= */
+function renderDuplication(view) {
+  setCrumb(t("dup_title"));
+  const billId = state.billFocus.duplication;
+  const findings = DUPLICATION[billId] || [];
+  if (!state.dupActive[billId] && findings.length) state.dupActive[billId] = findings[0].id;
+  const active = findings.find(f => f.id === state.dupActive[billId]);
+
+  view.innerHTML = `
+    <div class="page-head"><h1>${t("dup_title")}</h1><p>${t("dup_sub")}</p></div>
+    <select class="bill-select" id="dup-bill-select">${BILLS.map(b => `<option value="${b.id}" ${b.id===billId?"selected":""}>${billLabel(b)}</option>`).join("")}</select>
+    <div class="split">
+      <div class="card" style="overflow:hidden">
+        <div style="padding:14px 15px 4px" class="section-title" style="margin:0">${t("dup_findings")} (${findings.length})</div>
+        ${findings.length ? findings.map(f => `
+          <div class="finding-item ${f.id === (active&&active.id) ? "active" : ""}" data-find="${f.id}">
+            <div class="ftitle">${f.clause}</div>
+            <div class="fmeta">
+              <span class="sim-bar"><div style="width:${f.sim}%"></div></span>
+              <span class="mono">${f.sim}% similar</span>
+            </div>
+            <div class="fmeta" style="margin-top:3px">vs. ${f.against}</div>
+          </div>`).join("") : `<div style="padding:20px 15px;color:var(--ink-soft);font-size:13px">No overlaps detected for this bill.</div>`}
+      </div>
+      <div class="card">
+        <div style="padding:14px 16px 0" class="section-title" style="margin:0">${t("dup_compare")}</div>
+        ${active ? `
+          <div class="clause-compare">
+            <div class="clause-box"><h4>Draft bill — ${active.clause}</h4><p>${active.textA}</p></div>
+            <div class="clause-box"><h4>${active.against}</h4><p>${active.textB}</p></div>
+          </div>
+          <div style="padding:0 18px 18px;display:flex;gap:10px">
+            <button class="btn primary sm">Flag for revision</button>
+            <button class="btn sm">Mark as intentional cross-reference</button>
+          </div>
+        ` : `<div style="padding:20px 16px;color:var(--ink-soft);font-size:13px">Select a finding to compare clauses.</div>`}
+      </div>
+    </div>
+  `;
+  document.getElementById("dup-bill-select").addEventListener("change", e => { state.billFocus.duplication = e.target.value; renderRoute(); });
+  view.querySelectorAll("[data-find]").forEach(el => el.addEventListener("click", () => { state.dupActive[billId] = el.dataset.find; renderRoute(); }));
+}
+
+/* =========================================================================================
+   GAPS
+   ========================================================================================= */
+function gapKey(billId, gapId) { return billId + "::" + gapId; }
+function renderGaps(view) {
+  setCrumb(t("gaps_title"));
+  const billId = state.billFocus.gaps;
+  const bill = billById(billId);
+  const findings = GAPS[billId] || [];
+  const canDecide = ROLES[state.role].canDecide;
+
+  const paras = BILL_TEXT[billId] || null;
+
+  function paraHTML(text, idx) {
+    const g = findings.find(f => f.para === idx + 1);
+    if (!g) return `<p>${text}</p>`;
+    const st = state.gapStatus[gapKey(billId, g.id)];
+    const cls = st ? "resolved" : g.severity;
+    const phraseRe = new RegExp(g.phrase.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i");
+    const marked = text.replace(phraseRe, m => `<span class="flagphrase ${cls}" data-jump="${g.id}">${m}</span>`);
+    return `<p>${marked}</p>`;
+  }
+
+  view.innerHTML = `
+    <div class="page-head"><h1>${t("gaps_title")}</h1><p>${t("gaps_sub")}</p></div>
+    <select class="bill-select" id="gap-bill-select">${BILLS.map(b => `<option value="${b.id}" ${b.id===billId?"selected":""}>${billLabel(b)}</option>`).join("")}</select>
+    <div class="gap-layout">
+      <div class="card bill-text">
+        <p style="font-family:var(--mono);font-size:11px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.06em;margin-bottom:16px">${bill.title} — working draft</p>
+        ${paras ? paras.map(paraHTML).join("") : `<p style="color:var(--ink-soft);font-style:italic">${BILL_TEXT_PLACEHOLDER}</p>`}
+      </div>
+      <div class="card">
+        <div style="padding:14px 16px 0" class="section-title" style="margin:0">${t("gaps_issues")} (${findings.length})</div>
+        ${findings.length ? findings.map(g => {
+          const st = state.gapStatus[gapKey(billId, g.id)];
+          return `
+          <div class="issue-card ${st ? "resolved-"+st : ""}" id="issue-${g.id}">
+            <div class="issue-head"><span class="pill ${g.severity}">${g.severity}</span><span class="itxt">Paragraph ${g.para}</span></div>
+            <p class="desc">${g.desc}</p>
+            <div class="sugg">${g.suggestion}</div>
+            ${st
+              ? `<span class="resolved-note ${st}">${st === "accepted" ? "✓ accepted" : "✕ rejected"} by ${ROLES[state.role].short}</span>`
+              : `<div class="issue-actions">
+                  <button class="btn accept sm" data-decide="${g.id}" data-verdict="accepted" ${canDecide?"":"disabled title='View-only role'"}>${t("accept")}</button>
+                  <button class="btn reject sm" data-decide="${g.id}" data-verdict="rejected" ${canDecide?"":"disabled"}>${t("reject")}</button>
+                  <button class="btn sm" data-decide="${g.id}" data-verdict="commented">${t("comment")}</button>
+                </div>`}
+          </div>`;
+        }).join("") : `<div style="padding:20px 16px;color:var(--ink-soft);font-size:13px">No issues flagged for this bill.</div>`}
+      </div>
+    </div>
+    ${!canDecide ? `<footer class="note">Signed in as ${ROLES[state.role].name}: suggestions can be reviewed and commented on, but only drafters or the oversight unit can accept or reject changes to bill text.</footer>` : ""}
+  `;
+  document.getElementById("gap-bill-select").addEventListener("change", e => { state.billFocus.gaps = e.target.value; renderRoute(); });
+  view.querySelectorAll("[data-decide]").forEach(btn => btn.addEventListener("click", () => {
+    if (btn.dataset.verdict === "commented") { alert("Comment thread opened (prototype placeholder)."); return; }
+    state.gapStatus[gapKey(billId, btn.dataset.decide)] = btn.dataset.verdict;
+    renderRoute();
+  }));
+  view.querySelectorAll("[data-jump]").forEach(el => el.addEventListener("click", () => {
+    const target = document.getElementById("issue-" + el.dataset.jump);
+    if (target) target.scrollIntoView({ behavior: "smooth", block: "center" });
+  }));
+}
+
+/* =========================================================================================
+   COMPARATIVE
+   ========================================================================================= */
+function renderComparative(view) {
+  setCrumb(t("comp_title"));
+  const billId = state.billFocus.comparative;
+  const data = COMPARATIVE[billId];
+  view.innerHTML = `
+    <div class="page-head"><h1>${t("comp_title")}</h1><p>${t("comp_sub")}</p></div>
+    <select class="bill-select" id="comp-bill-select">${BILLS.map(b => `<option value="${b.id}" ${b.id===billId?"selected":""}>${billLabel(b)}</option>`).join("")}</select>
+    <p style="font-family:var(--mono);font-size:12px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.05em;margin-bottom:16px">${data.topic}</p>
+    ${data.countries.length ? `
+      <div class="grid cols-4">
+        ${data.countries.map(c => `
+          <div class="card country-card">
+            <p class="cflag">${c.flag}</p>
+            <h4>${c.law}</h4>
+            <p>${c.note}</p>
+          </div>`).join("")}
+      </div>
+      <div class="takeaway"><h4>AI takeaway — review before citing</h4><p>${data.takeaway}</p></div>
+    ` : `<div class="card" style="padding:20px;color:var(--ink-soft);font-size:13.5px">${data.takeaway}</div>`}
+  `;
+  document.getElementById("comp-bill-select").addEventListener("change", e => { state.billFocus.comparative = e.target.value; renderRoute(); });
+}
+
+/* =========================================================================================
+   AUDIT
+   ========================================================================================= */
+function renderAudit(view) {
+  setCrumb(t("audit_title"));
+  view.innerHTML = `
+    <div class="page-head"><h1>${t("audit_title")}</h1><p>${t("audit_sub")}</p></div>
+    <div class="card table-wrap">
+      <table>
+        <thead><tr><th>${t("col_time")}</th><th>${t("col_user")}</th><th>${t("col_module")}</th><th>${t("col_action")}</th><th>${t("col_detail")}</th></tr></thead>
+        <tbody>
+          ${AUDIT.map(a => `
+            <tr>
+              <td class="mono">${a.time}</td>
+              <td>${a.user} <span class="pill neutral" style="margin-left:4px">${ROLES[a.role].short}</span></td>
+              <td>${a.module}</td>
+              <td>${a.action}</td>
+              <td style="color:var(--ink-soft)">${a.detail}</td>
+            </tr>`).join("")}
+        </tbody>
+      </table>
+    </div>
+    <footer class="note">Every AI suggestion shown to a user, and every accept / reject / comment decision, is written to this log with no gaps — the record referenced by the oversight-unit journey.</footer>
+  `;
+}
+
+/* =========================================================================================
+   BOOT
+   ========================================================================================= */
+renderLogin();
+</script>

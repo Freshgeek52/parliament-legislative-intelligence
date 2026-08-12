@@ -1,0 +1,119 @@
+{
+  "_note": "Draft bills are internal pre-tabling documents; they are not published on amategeko.gov.rw. These three sample drafts are the demo workflow inputs. All analysis (duplication, gaps, assistant citations) runs against the REAL corpus of laws in force scraped from amategeko.gov.rw.",
+  "drafts": [
+    {
+      "id": "bill-digital-governance",
+      "title": "Draft Law on Digital Governance and Data Protection",
+      "kind": "bill",
+      "status": "in_committee",
+      "committee": "Committee on ICT, Innovation and Digital Economy",
+      "sponsor": "Ministry of ICT and Innovation (MINICT)",
+      "lastUpdated": "2026-07-10",
+      "summary": "Consolidates data protection, breach notification and cross-border data transfer rules for public and private data controllers, and establishes a Digital Governance Authority to supervise compliance.",
+      "articles": [
+        {
+          "id": "bill-digital-governance-1",
+          "number": "1",
+          "heading": "Purpose and scope",
+          "text": "This Law governs the collection, processing, storage and transfer of digital and personal data by public institutions and private entities operating within the national digital ecosystem."
+        },
+        {
+          "id": "bill-digital-governance-5",
+          "number": "5",
+          "heading": "Consent for electronic data collection",
+          "text": "A data controller collecting personal data through a digital service shall obtain the free, specific and informed consent of the data subject prior to processing, except where another lawful basis under this Law applies."
+        },
+        {
+          "id": "bill-digital-governance-6",
+          "number": "6",
+          "heading": "Digital Governance Authority",
+          "text": "There is hereby established a Digital Governance Authority responsible for supervising compliance with this Law, issuing implementing guidelines, and receiving complaints from data subjects."
+        },
+        {
+          "id": "bill-digital-governance-9",
+          "number": "9",
+          "heading": "Definitions",
+          "text": "In this Law, 'personal data' means any information relating to an identified or identifiable natural person, whether held in digital or physical form."
+        },
+        {
+          "id": "bill-digital-governance-14",
+          "number": "14",
+          "heading": "Notification of a data breach",
+          "text": "A data controller shall notify the Digital Governance Authority within seventy-two hours of becoming aware of a personal data breach, and shall notify affected data subjects without undue delay where the breach is likely to result in a high risk to their rights."
+        },
+        {
+          "id": "bill-digital-governance-21",
+          "number": "21",
+          "heading": "Cross-border data transfer",
+          "text": "Personal data may be transferred outside Rwanda only where the receiving country has been recognised as providing an adequate level of protection, or where the controller has adopted standard contractual clauses approved by the Digital Governance Authority."
+        }
+      ]
+    },
+    {
+      "id": "bill-ai-governance",
+      "title": "Draft Law on Artificial Intelligence Governance and Accountability",
+      "kind": "bill",
+      "status": "first_reading",
+      "committee": "Committee on ICT, Innovation and Digital Economy",
+      "sponsor": "Ministry of ICT and Innovation (MINICT)",
+      "lastUpdated": "2026-06-28",
+      "summary": "Sets accountability, transparency and human-review requirements for the design, deployment and procurement of automated decision-making and artificial intelligence systems by public institutions.",
+      "articles": [
+        {
+          "id": "bill-ai-governance-4",
+          "number": "4",
+          "heading": "Definitions",
+          "text": "For the purposes of this Law, 'automated decision' means a decision produced wholly or in significant part by an artificial intelligence system without meaningful human input at the point of decision."
+        },
+        {
+          "id": "bill-ai-governance-7",
+          "number": "7",
+          "heading": "Human review of automated decisions",
+          "text": "A public institution shall not rely solely on an automated decision that produces legal or similarly significant effects on an individual unless a documented human review step is available to that individual on request."
+        },
+        {
+          "id": "bill-ai-governance-11",
+          "number": "11",
+          "heading": "Cross-border AI training data",
+          "text": "Where an artificial intelligence system is trained using personal data sourced outside Rwanda, the deploying institution shall verify that the data was obtained in accordance with the data protection standards of the country of origin and shall document that verification."
+        },
+        {
+          "id": "bill-ai-governance-15",
+          "number": "15",
+          "heading": "AI Accountability Officer",
+          "text": "Each public institution deploying a high-impact artificial intelligence system shall designate an AI Accountability Officer responsible for monitoring compliance with this Law."
+        }
+      ]
+    },
+    {
+      "id": "bill-drafting-office",
+      "title": "Draft Law Establishing the Legislative Drafting and Quality Assurance Office",
+      "kind": "bill",
+      "status": "draft",
+      "committee": "Committee on Political Affairs and Governance",
+      "sponsor": "Office of the Clerk, Chamber of Deputies",
+      "lastUpdated": "2026-07-02",
+      "summary": "Creates a standing legislative drafting and quality assurance office responsible for pre-tabling review of bills, including duplication checks, gap analysis, and comparative legislation research.",
+      "articles": [
+        {
+          "id": "bill-drafting-office-2",
+          "number": "2",
+          "heading": "Establishment",
+          "text": "There is hereby established, within the Parliamentary Service, a Legislative Drafting and Quality Assurance Office."
+        },
+        {
+          "id": "bill-drafting-office-3",
+          "number": "3",
+          "heading": "Functions of the Office",
+          "text": "The Office shall review every bill referred to committee for internal consistency, duplication with existing law, and alignment with its stated policy intent, prior to first reading."
+        },
+        {
+          "id": "bill-drafting-office-6",
+          "number": "6",
+          "heading": "Use of decision-support tools",
+          "text": "The Office may use automated decision-support tools to assist its review, provided that any finding produced by such a tool is presented to a member of the Office for human confirmation before being reported to a committee."
+        }
+      ]
+    }
+  ]
+}

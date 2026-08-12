@@ -1,0 +1,736 @@
+<!doctype html>
+<title>Parliament AI System — User Journeys</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+  :root {
+    --ink: #101f2f;
+    --ink-soft: #3f4663;
+    --navy-900: #101f2f;
+    --navy-800: #10272f;
+    --navy-700: #17303c;
+    --paper: #f5faf7;
+    --paper-raised: #ffffff;
+    --line: #cedee4;
+    --line-soft: #e9faff;
+    --gold: #5bb581;
+    --gold-strong: #237a4e;
+    --crimson: #c1443a;
+    --burnt: #ffb05b;
+    --slate: #3f6fa6;
+    --forest: #237a4e;
+    --shadow: 0 1px 2px rgba(16, 31, 47, 0.07), 0 8px 24px -12px rgba(16, 31, 47, 0.2);
+    --serif: "Segoe UI", "Frutiger LT Std", "Myriad Pro", -apple-system, system-ui, "Helvetica Neue", Arial, sans-serif;
+    --sans: "Segoe UI", "Frutiger LT Std", "Myriad Pro", -apple-system, system-ui, "Helvetica Neue", Arial, sans-serif;
+    --mono: "Cascadia Code", "SFMono-Regular", Consolas, Menlo, monospace;
+  }
+  :root[data-theme="dark"] {
+    --ink: #e9f3ed;
+    --ink-soft: #adc2c9;
+    --paper: #0a121b;
+    --paper-raised: #101f2f;
+    --line: #223a48;
+    --line-soft: #17303f;
+    --navy-900: #060b12;
+    --navy-800: #101f2f;
+    --navy-700: #16303d;
+    --gold: #6fcb98;
+    --gold-strong: #8fe0b4;
+    --crimson: #e8776c;
+    --burnt: #ffc583;
+    --slate: #8fc1f0;
+    --forest: #6fcb98;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.35), 0 12px 28px -14px rgba(0, 0, 0, 0.65);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ink: #e9f3ed;
+      --ink-soft: #adc2c9;
+      --paper: #0a121b;
+      --paper-raised: #101f2f;
+      --line: #223a48;
+      --line-soft: #17303f;
+      --navy-900: #060b12;
+      --navy-800: #101f2f;
+      --navy-700: #16303d;
+      --gold: #6fcb98;
+      --gold-strong: #8fe0b4;
+      --crimson: #e8776c;
+      --burnt: #ffc583;
+      --slate: #8fc1f0;
+      --forest: #6fcb98;
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.35), 0 12px 28px -14px rgba(0, 0, 0, 0.65);
+    }
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 28px 96px; }
+
+  /* ---------- Masthead ---------- */
+  .masthead {
+    background: linear-gradient(155deg, var(--navy-900), var(--navy-700) 130%);
+    color: #f2efe4;
+    padding: 56px 28px 44px;
+    border-bottom: 3px solid var(--gold);
+  }
+  .masthead-inner { max-width: 1180px; margin: 0 auto; }
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 12.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #d8c48c;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .eyebrow .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gold); }
+  h1.title {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: clamp(30px, 4.4vw, 46px);
+    line-height: 1.08;
+    margin: 14px 0 12px;
+    text-wrap: balance;
+    color: #fbf9f2;
+  }
+  .subtitle {
+    font-size: 16.5px;
+    color: #c9c6ba;
+    max-width: 62ch;
+    margin: 0;
+  }
+  .masthead-meta {
+    margin-top: 26px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 28px;
+    font-size: 13px;
+    color: #b9b6aa;
+    border-top: 1px solid rgba(246, 242, 233, 0.14);
+    padding-top: 18px;
+  }
+  .masthead-meta b { color: #f2efe4; font-weight: 600; }
+
+  /* ---------- Persona tabs ---------- */
+  .persona-nav {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: var(--paper);
+    border-bottom: 1px solid var(--line);
+    padding-top: 22px;
+  }
+  .persona-tabs {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 28px;
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+  }
+  .persona-tab {
+    appearance: none;
+    border: 1px solid transparent;
+    background: transparent;
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.035em;
+    color: var(--ink-soft);
+    padding: 13px 18px 14px;
+    border-radius: 10px 10px 0 0;
+    cursor: pointer;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    transition: color 0.15s ease, background 0.15s ease;
+  }
+  .persona-tab .swatch { width: 9px; height: 9px; border-radius: 50%; flex: none; }
+  .persona-tab:hover { color: var(--ink); background: var(--line-soft); }
+  .persona-tab[aria-selected="true"] {
+    color: var(--navy-900);
+    background: var(--paper-raised);
+    border-color: var(--line) var(--line) transparent;
+    box-shadow: 0 -1px 0 var(--gold) inset;
+  }
+  .persona-tab small { font-weight: 500; text-transform: none; letter-spacing: normal; color: var(--ink-soft); font-family: var(--mono); font-size: 11.5px; }
+
+  /* ---------- Persona panel ---------- */
+  .panel { display: none; padding-top: 40px; }
+  .panel.active { display: block; animation: rise 0.35s ease; }
+  @keyframes rise { from { opacity: 0; transform: translateY(6px);} to { opacity: 1; transform: translateY(0);} }
+  @media (prefers-reduced-motion: reduce) { .panel.active { animation: none; } }
+
+  .persona-intro {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: 28px;
+    align-items: start;
+    margin-bottom: 40px;
+  }
+  @media (max-width: 780px) { .persona-intro { grid-template-columns: 1fr; } }
+  .persona-card {
+    background: var(--paper-raised);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 22px 24px;
+    box-shadow: var(--shadow);
+  }
+  .persona-role {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gold-strong);
+    margin: 0 0 6px;
+  }
+  .persona-card h2 {
+    font-family: var(--serif);
+    font-size: 25px;
+    margin: 0 0 10px;
+    font-weight: 600;
+  }
+  .persona-card p { color: var(--ink-soft); margin: 0 0 14px; font-size: 14.5px; }
+  .persona-facts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 18px; margin-top: 16px; }
+  .persona-facts div { font-size: 13px; }
+  .persona-facts dt { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); margin: 0; }
+  .persona-facts dd { margin: 3px 0 0; color: var(--ink); }
+
+  .emotion-card {
+    background: var(--paper-raised);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 20px 22px 16px;
+    box-shadow: var(--shadow);
+  }
+  .emotion-card h3 {
+    font-family: var(--sans);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin: 0 0 14px;
+  }
+  .emotion-svg { width: 100%; height: auto; display: block; }
+
+  /* ---------- Timeline ---------- */
+  .timeline { position: relative; }
+  .timeline-line {
+    position: absolute;
+    left: 27px;
+    top: 8px;
+    bottom: 8px;
+    width: 2px;
+    background: linear-gradient(var(--line), var(--line));
+    background-repeat: no-repeat;
+  }
+  .stage {
+    position: relative;
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    gap: 0 22px;
+    margin-bottom: 6px;
+  }
+  .stage-marker {
+    position: relative;
+    z-index: 2;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--paper-raised);
+    border: 2px solid var(--line);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 19px;
+    color: var(--navy-800);
+  }
+  :root[data-theme="dark"] .stage-marker { color: var(--gold); }
+  .stage[data-ai="true"] .stage-marker { border-color: var(--gold); }
+  .stage-body {
+    padding: 4px 0 40px;
+    border-bottom: 1px dashed var(--line);
+    margin-bottom: 6px;
+  }
+  .stage:last-child .stage-body { border-bottom: none; }
+  .stage-head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 6px; }
+  .stage-head h4 {
+    font-family: var(--serif);
+    font-size: 19px;
+    font-weight: 600;
+    margin: 0;
+  }
+  .stage-tag {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 3px 9px;
+    border-radius: 100px;
+    border: 1px solid currentColor;
+  }
+  .tag-assistant { color: var(--slate); }
+  .tag-duplication { color: var(--burnt); }
+  .tag-gaps { color: var(--crimson); }
+  .tag-comparative { color: var(--forest); }
+  .tag-human { color: var(--ink-soft); }
+
+  .stage-goal { color: var(--ink-soft); font-size: 14.5px; margin: 0 0 14px; max-width: 68ch; }
+
+  .stage-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+  @media (max-width: 900px) { .stage-grid { grid-template-columns: 1fr; } }
+  .stage-block {
+    background: var(--paper-raised);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 13px 15px;
+  }
+  .stage-block .label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin: 0 0 6px;
+  }
+  .stage-block p { margin: 0; font-size: 13.5px; }
+  .stage-block.pain { border-left: 3px solid var(--crimson); }
+  .stage-block.ai { border-left: 3px solid var(--gold); }
+  .stage-block.outcome { border-left: 3px solid var(--forest); }
+  .quote {
+    margin: 12px 0 0;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 14.5px;
+    color: var(--navy-800);
+    padding-left: 14px;
+    border-left: 2px solid var(--gold);
+  }
+  :root[data-theme="dark"] .quote { color: #d8c48c; }
+
+  /* ---------- Footer / legend ---------- */
+  .legend {
+    margin-top: 48px;
+    padding-top: 22px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 22px;
+    font-size: 12.5px;
+    color: var(--ink-soft);
+  }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .legend i { width: 9px; height: 9px; border-radius: 3px; display: inline-block; }
+
+  ::selection { background: var(--gold); color: #1b1f2e; }
+</style>
+
+<div class="masthead">
+  <div class="masthead-inner">
+    <p class="eyebrow"><span class="dot"></span> Parliament AI System — Legislative Intelligence</p>
+    <h1 class="title">Three people, one bill, and the moments AI actually earns its place</h1>
+    <p class="subtitle">
+      A walk through how a Member of Parliament, a committee researcher, and the legislative
+      oversight unit each move through the system — from the first blank page to the audit trail
+      left behind.
+    </p>
+    <div class="masthead-meta">
+      <span><b>Owner</b> Parliament of Rwanda</span>
+      <span><b>Technology partner</b> MINICT / RISA</span>
+      <span><b>Deployment</b> Cloud-first → on-prem</span>
+      <span><b>Languages</b> Kinyarwanda · English · French</span>
+    </div>
+  </div>
+</div>
+
+<div class="persona-nav">
+  <div class="persona-tabs" role="tablist" aria-label="Select a persona">
+    <button class="persona-tab" role="tab" aria-selected="true" aria-controls="panel-mp" id="tab-mp" data-target="panel-mp">
+      <span class="swatch" style="background:var(--slate)"></span> MP &amp; Legal Drafter <small>Drafting a bill</small>
+    </button>
+    <button class="persona-tab" role="tab" aria-selected="false" aria-controls="panel-staff" id="tab-staff" data-target="panel-staff">
+      <span class="swatch" style="background:var(--burnt)"></span> Committee Researcher <small>Reviewing a tabled bill</small>
+    </button>
+    <button class="persona-tab" role="tab" aria-selected="false" aria-controls="panel-oversight" id="tab-oversight" data-target="panel-oversight">
+      <span class="swatch" style="background:var(--forest)"></span> Oversight Unit <small>Governing the AI itself</small>
+    </button>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- ================= PERSONA 1: MP / Legal Drafter ================= -->
+  <section class="panel active" id="panel-mp">
+    <div class="persona-intro">
+      <div class="persona-card">
+        <p class="persona-role">Persona · Member of Parliament / Legal Drafter</p>
+        <h2>Uwase Diane, Legal Drafter, Chamber of Deputies</h2>
+        <p>
+          Assigned to turn a policy directive on digital data protection into a draft bill.
+          Works mostly in Kinyarwanda and English, under a committee deadline, and is
+          personally accountable for every clause she tables.
+        </p>
+        <dl class="persona-facts">
+          <div><dt>Trigger</dt><dd>Assigned a new bill to draft</dd></div>
+          <div><dt>Primary goal</dt><dd>A defensible, gap-free first draft</dd></div>
+          <div><dt>Success looks like</dt><dd>Draft tabled with no committee rework</dd></div>
+          <div><dt>Biggest fear</dt><dd>An unnoticed conflict with existing law</dd></div>
+        </dl>
+      </div>
+      <div class="emotion-card">
+        <h3>Confidence across the journey</h3>
+        <svg class="emotion-svg" viewBox="0 0 320 130" preserveAspectRatio="xMidYMid meet">
+          <line x1="10" y1="65" x2="310" y2="65" stroke="var(--line)" stroke-width="1" stroke-dasharray="2 4"/>
+          <path d="M10,95 C55,108 75,112 95,100 C130,80 140,50 175,45 C205,40 215,55 240,38 C270,20 285,18 310,14"
+                fill="none" stroke="var(--gold)" stroke-width="2.5" stroke-linecap="round"/>
+          <g font-family="Cascadia Code, Consolas, monospace" font-size="9" fill="var(--ink-soft)">
+            <text x="10" y="122">Research</text>
+            <text x="95" y="122">Drafting</text>
+            <text x="175" y="122">Quality pass</text>
+            <text x="255" y="122">Tabled</text>
+          </g>
+          <circle cx="10" cy="95" r="3" fill="var(--crimson)"/>
+          <circle cx="310" cy="14" r="3.5" fill="var(--forest)"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="timeline">
+      <div class="timeline-line"></div>
+
+      <div class="stage" data-ai="false">
+        <div class="stage-marker">1</div>
+        <div class="stage-body">
+          <div class="stage-head">
+            <h4>Opens the brief, not a blank page</h4>
+            <span class="stage-tag tag-human">Human</span>
+          </div>
+          <p class="stage-goal">Diane receives the policy directive and needs to understand what already exists in law before writing a single clause.</p>
+          <div class="stage-grid">
+            <div class="stage-block pain"><p class="label">Pain today</p><p>Searching PDFs of past Gazettes by hand, no way to know if a topic is already covered elsewhere.</p></div>
+            <div class="stage-block ai"><p class="label">System role</p><p>None yet — she signs in, selects the bill workspace, and sets language to Kinyarwanda.</p></div>
+            <div class="stage-block outcome"><p class="label">She leaves with</p><p>A scoped workspace for the bill, linked to the policy directive.</p></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stage" data-ai="true">
+        <div class="stage-marker">2</div>
+        <div class="stage-body">
+          <div class="stage-head">
+            <h4>Researches with the drafting assistant</h4>
+            <span class="stage-tag tag-assistant">Research &amp; Drafting Assistant</span>
+          </div>
+          <p class="stage-goal">She asks the assistant to summarise every existing provision touching "data protection" and "digital governance," then drafts clause-by-clause with template filling.</p>
+          <div class="stage-grid">
+            <div class="stage-block pain"><p class="label">Pain today</p><p>Hours lost to manual cross-referencing; easy to miss a relevant 2016 law.</p></div>
+            <div class="stage-block ai"><p class="label">System role</p><p>Retrieves and summarises grounded sources, every claim cited to a specific law and article; drafts sections from templates on request.</p></div>
+            <div class="stage-block outcome"><p class="label">She leaves with</p><p>A first draft with inline citations she can verify, not blind trust.</p></div>
+          </div>
+          <p class="quote">"It doesn't write the bill for me. It stops me from writing it blind."</p>
+        </div>
+      </div>
+
+      <div class="stage" data-ai="true">
+        <div class="stage-marker">3</div>
+        <div class="stage-body">
+          <div class="stage-head">
+            <h4>Runs the automated quality pass</h4>
+            <span class="stage-tag tag-duplication">Duplication</span>
+            <span class="stage-tag tag-gaps">Gaps &amp; Inconsistency</span>
+          </div>
+          <p class="stage-goal">Before showing anyone, she runs duplication detection and gap analysis against her own draft.</p>
+          <div class="stage-grid">
+            <div class="stage-block pain"><p class="label">Pain today</p><p>Conflicts and vague clauses only surface in committee — in public, after the fact.</p></div>
+            <div class="stage-block ai"><p class="label">System role</p><p>Flags a clause that overlaps an existing law's Article 14, and marks two clauses as vague with suggested tightened language — all as suggestions.</p></div>
+            <div class="stage-block outcome"><p class="label">She leaves with</p><p>A severity-tagged issue list she personally accepts or rejects, one by one.</p></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stage" data-ai="true">
+        <div class="stage-marker">4</div>
+        <div class="stage-body">
+          <div class="stage-head">
+            <h4>Benchmarks against comparative legislation</h4>
+            <span class="stage-tag tag-comparative">Comparative Legislation</span>
+          </div>
+          <p class="stage-goal">She checks how similar bills were framed elsewhere, to pre-empt a question she expects from committee.</p>
+          <div class="stage-grid">
+            <div class="stage-block pain"><p class="label">Pain today</p><p>Comparative research is ad hoc, usually skipped under deadline pressure.</p></div>
+            <div class="stage-block ai"><p class="label">System role</p><p>Surfaces equivalent provisions from peer countries with a short AI takeaway on divergence — she treats it as a starting point.</p></div>
+            <div class="stage-block outcome"><p class="label">She leaves with</p><p>Language ready for the "how does this compare" question.</p></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stage" data-ai="false">
+        <div class="stage-marker">5</div>
+        <div class="stage-body">
+          <div class="stage-head">
+            <h4>Finalises and tables the bill</h4>
+            <span class="stage-tag tag-human">Human decision</span>
+          </div>
+          <p class="stage-goal">Every accepted suggestion is hers by decision, not by default. She submits a draft she can defend clause by clause.</p>
+          <div class="stage-grid">
+            <div class="stage-block pain"><p class="label">Pain today</p><p>Committee rework cycles because issues surface too late.</p></div>
+            <div class="stage-block ai"><p class="label">System role</p><p>Locks a version snapshot and records the full accept/reject trail against her name.</p></div>
+            <div class="stage-block outcome"><p class="label">She leaves with</p><p>A tabled bill with fewer surprises — and an audit trail that protects her judgment.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= PERSONA 2: Committee Researcher ================= -->
+  <section class="panel" id="panel-staff">
+    <div class="persona-intro">
+      <div class="persona-card">
+        <p class="persona-role">Persona · Parliamentary Research &amp; Committee Staff</p>
+        <h2>Mugisha Eric, Committee Research Officer</h2>
+        <p>
+          Supports a standing committee. Receives tabled bills and must produce a briefing
+          note before the committee sits — usually with two to three days' notice and several
+          bills in flight at once.
+        </p>
+        <dl class="persona-facts">
+          <div><dt>Trigger</dt><dd>A bill is tabled to his committee</dd></div>
+          <div><dt>Primary goal</dt><dd>A briefing the committee can act on</dd></div>
+          <div><dt>Success looks like</dt><dd>No blind spots raised mid-session</dd></div>
+          <div><dt>Biggest fear</dt><dd>Missing a conflict a member later catches</dd></div>
+        </dl>
+      </div>
+      <div class="emotion-card">
+        <h3>Confidence across the journey</h3>
+        <svg class="emotion-svg" viewBox="0 0 320 130" preserveAspectRatio="xMidYMid meet">
+          <line x1="10" y1="65" x2="310" y2="65" stroke="var(--line)" stroke-width="1" stroke-dasharray="2 4"/>
+          <path d="M10,88 C40,100 60,102 85,92 C115,80 120,58 150,50 C180,42 190,60 220,42 C250,25 270,20 310,16"
+                fill="none" stroke="var(--burnt)" stroke-width="2.5" stroke-linecap="round"/>
+          <g font-family="Cascadia Code, Consolas, monospace" font-size="9" fill="var(--ink-soft)">
+            <text x="10" y="122">Receives bill</text>
+            <text x="120" y="122">Deep dive</text>
+            <text x="205" y="122">Cross-check</text>
+            <text x="270" y="122">Briefing</text>
+          </g>
+          <circle cx="10" cy="88" r="3" fill="var(--crimson)"/>
+          <circle cx="310" cy="16" r="3.5" fill="var(--forest)"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="timeline">
+      <div class="timeline-line"></div>
+
+      <div class="stage" data-ai="false">
+        <div class="stage-marker">1</div>
+        <div class="stage-body">
+          <div class="stage-head">
+            <h4>Bill lands on the committee queue</h4>
+            <span class="stage-tag tag-human">Human</span>
+          </div>
+          <p class="stage-goal">Eric opens the newly tabled bill inside the shared workspace, already linked to the drafter's version history.</p>
+          <div class="stage-grid">
+            <div class="stage-block pain"><p class="label">Pain today</p><p>Bills arrive as static documents with no context on what changed or why.</p></div>
+            <div class="stage-block ai"><p class="label">System role</p><p>Shows the version history and the drafter's own accepted/rejected AI suggestions as background context.</p></div>
+            <div class="stage-block outcome"><p class="label">He leaves with</p><p>A head start instead of a cold read.</p></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stage" data-ai="true">
+        <div class="stage-marker">2</div>
+        <div class="stage-body">
+          <div class="stage-head">
+            <h4>Deep-dives with the research assistant</h4>
+            <span class="stage-tag tag-assistant">Research &amp; Drafting Assistant</span>
+          </div>
+          <p class="stage-goal">He asks targeted questions — "what precedent exists for Article 9", "summarise committee reports on related bills since 2022" — building his own understanding fast.</p>
+          <div class="stage-grid">
+            <div class="stage-block pain"><p class="label">Pain today</p><p>Research is the majority of prep time, most of it just locating documents.</p></div>
+            <div class="stage-block ai"><p class="label">System role</p><p>Answers grounded in the parliamentary knowledge base, cited to source, in Kinyarwanda or English as needed.</p></div>
+            <div class="stage-block outcome"><p class="label">He leaves with</p><p>Verified context, hours faster than manual search.</p></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stage" data-ai="true">
+        <div class="stage-marker">3</div>
+        <div class="stage-body">
+          <div class="stage-head">
+            <h4>Independently cross-checks the bill</h4>
+            <span class="stage-tag tag-duplication">Duplication</span>
+            <span class="stage-tag tag-gaps">Gaps &amp; Inconsistency</span>
+          </div>
+          <p class="stage-goal">He re-runs duplication and gap checks himself, as a second, independent pass — not just trusting the drafter's own review.</p>
+          <div class="stage-grid">
+            <div class="stage-block pain"><p class="label">Pain today</p><p>No independent verification step; committee is the first real second opinion.</p></div>
+            <div class="stage-block ai"><p class="label">System role</p><p>Surfaces the same analytical layer independently, plus flags anything the drafter dismissed that he wants to re-examine.</p></div>
+            <div class="stage-block outcome"><p class="label">He leaves with</p><p>Confidence the committee won't be blindsided.</p></div>
+          </div>
+          <p class="quote">"I'm not re-doing her job. I'm the second pair of eyes the process was missing."</p>
+        </div>
+      </div>
+
+      <div class="stage" data-ai="false">
+        <div class="stage-marker">4</div>
+        <div class="stage-body">
+          <div class="stage-head">
+            <h4>Prepares and presents the briefing</h4>
+            <span class="stage-tag tag-human">Human decision</span>
+          </div>
+          <p class="stage-goal">He drafts the committee briefing note, using the assistant to summarise findings into plain language, and presents it in session.</p>
+          <div class="stage-grid">
+            <div class="stage-block pain"><p class="label">Pain today</p><p>Briefing notes assembled overnight from scattered notes.</p></div>
+            <div class="stage-block ai"><p class="label">System role</p><p>Drafts a summary from his findings for him to edit and own — never sent to committee unreviewed.</p></div>
+            <div class="stage-block outcome"><p class="label">He leaves with</p><p>A tighter, better-substantiated briefing, delivered on time.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= PERSONA 3: Oversight Unit ================= -->
+  <section class="panel" id="panel-oversight">
+    <div class="persona-intro">
+      <div class="persona-card">
+        <p class="persona-role">Persona · Legislative Quality &amp; Oversight Unit</p>
+        <h2>Legislative Quality Unit, Office of the Clerk</h2>
+        <p>
+          Doesn't draft bills — governs the system that helps draft them. Responsible for
+          trust in the tool itself: that suggestions stay grounded, drafts stay confidential
+          until tabled, and every AI action is traceable.
+        </p>
+        <dl class="persona-facts">
+          <div><dt>Trigger</dt><dd>Ongoing — daily monitoring, plus incidents</dd></div>
+          <div><dt>Primary goal</dt><dd>An auditable, trustworthy system</dd></div>
+          <div><dt>Success looks like</dt><dd>Zero ungrounded suggestions reach members</dd></div>
+          <div><dt>Biggest fear</dt><dd>A hallucinated citation nobody catches</dd></div>
+        </dl>
+      </div>
+      <div class="emotion-card">
+        <h3>Vigilance across the journey</h3>
+        <svg class="emotion-svg" viewBox="0 0 320 130" preserveAspectRatio="xMidYMid meet">
+          <line x1="10" y1="65" x2="310" y2="65" stroke="var(--line)" stroke-width="1" stroke-dasharray="2 4"/>
+          <path d="M10,55 C50,50 60,70 95,75 C130,80 140,45 175,40 C205,36 215,80 245,70 C275,60 285,30 310,28"
+                fill="none" stroke="var(--forest)" stroke-width="2.5" stroke-linecap="round"/>
+          <g font-family="Cascadia Code, Consolas, monospace" font-size="9" fill="var(--ink-soft)">
+            <text x="10" y="122">Monitor</text>
+            <text x="95" y="122">Spot-check</text>
+            <text x="175" y="122">Investigate</text>
+            <text x="255" y="122">Report</text>
+          </g>
+          <circle cx="10" cy="55" r="3" fill="var(--forest)"/>
+          <circle cx="245" cy="70" r="3.5" fill="var(--crimson)"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="timeline">
+      <div class="timeline-line"></div>
+
+      <div class="stage" data-ai="true">
+        <div class="stage-marker">1</div>
+        <div class="stage-body">
+          <div class="stage-head">
+            <h4>Opens the oversight dashboard</h4>
+            <span class="stage-tag tag-human">Cross-cutting</span>
+          </div>
+          <p class="stage-goal">Starts the day with a system-wide view: how many suggestions were made, accepted, rejected, and by whom, across every active bill.</p>
+          <div class="stage-grid">
+            <div class="stage-block pain"><p class="label">Pain today</p><p>No comparable oversight function exists for AI-assisted drafting — this is a new discipline.</p></div>
+            <div class="stage-block ai"><p class="label">System role</p><p>Aggregates the audit log into acceptance-rate trends and highlights any suggestion overridden without comment.</p></div>
+            <div class="stage-block outcome"><p class="label">Leaves with</p><p>A system-level read, not a bill-by-bill guess.</p></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stage" data-ai="true">
+        <div class="stage-marker">2</div>
+        <div class="stage-body">
+          <div class="stage-head">
+            <h4>Spot-checks AI suggestions against source</h4>
+            <span class="stage-tag tag-assistant">Assistant</span>
+            <span class="stage-tag tag-gaps">Gaps</span>
+          </div>
+          <p class="stage-goal">Samples a set of recent suggestions and manually verifies the cited article actually says what the system claims.</p>
+          <div class="stage-grid">
+            <div class="stage-block pain"><p class="label">Pain today</p><p>N/A — this verification step doesn't exist without the audit trail and citations to check against.</p></div>
+            <div class="stage-block ai"><p class="label">System role</p><p>Every suggestion is stored with its exact source citation, making spot-checks fast rather than forensic.</p></div>
+            <div class="stage-block outcome"><p class="label">Leaves with</p><p>Either confirmation, or a specific citation to escalate.</p></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stage" data-ai="false">
+        <div class="stage-marker">3</div>
+        <div class="stage-body">
+          <div class="stage-head">
+            <h4>Investigates a flagged risk item</h4>
+            <span class="stage-tag tag-human">Escalation</span>
+          </div>
+          <p class="stage-goal">A drafter reports a suggestion that looked wrong. The unit traces exactly what was retrieved, what was generated, and who saw it.</p>
+          <div class="stage-grid">
+            <div class="stage-block pain"><p class="label">Pain today</p><p>Without full lineage, "the AI was wrong" is unactionable.</p></div>
+            <div class="stage-block ai"><p class="label">System role</p><p>Full request/response/citation lineage is retrievable per suggestion — the fix (retrieval gap, translation error, stale document) is diagnosable.</p></div>
+            <div class="stage-block outcome"><p class="label">Leaves with</p><p>A root cause, not a shrug.</p></div>
+          </div>
+          <p class="quote">"If we can't explain a suggestion after the fact, it shouldn't have been made in the first place."</p>
+        </div>
+      </div>
+
+      <div class="stage" data-ai="false">
+        <div class="stage-marker">4</div>
+        <div class="stage-body">
+          <div class="stage-head">
+            <h4>Reports to leadership, feeds improvement</h4>
+            <span class="stage-tag tag-human">Human decision</span>
+          </div>
+          <p class="stage-goal">Compiles findings into a periodic report to Parliament leadership and MINICT/RISA, informing the on-prem migration and roadmap priorities.</p>
+          <div class="stage-grid">
+            <div class="stage-block pain"><p class="label">Pain today</p><p>No feedback loop from usage back into system priorities.</p></div>
+            <div class="stage-block ai"><p class="label">System role</p><p>Provides the underlying metrics; the judgment and recommendation stay human.</p></div>
+            <div class="stage-block outcome"><p class="label">Leaves with</p><p>Evidence-based input into what gets built or hardened next.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="legend">
+      <span><i style="background:var(--slate)"></i> Research &amp; Drafting Assistant</span>
+      <span><i style="background:var(--burnt)"></i> Duplication Detection</span>
+      <span><i style="background:var(--crimson)"></i> Gap &amp; Inconsistency Analysis</span>
+      <span><i style="background:var(--forest)"></i> Comparative Legislation</span>
+      <span><i style="background:var(--ink-soft)"></i> Human-only step — no AI in the loop</span>
+    </div>
+  </section>
+
+</div>
+
+<script>
+  const tabs = document.querySelectorAll('.persona-tab');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.setAttribute('aria-selected', 'false'));
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      tab.setAttribute('aria-selected', 'true');
+      document.getElementById(tab.dataset.target).classList.add('active');
+    });
+  });
+</script>
