@@ -8,7 +8,7 @@ module.exports = {
     extend: {
       colors: {
         // Design system ported verbatim from the "My Assist" reference app
-        // (Smart Assist / Vite+React) — plain Tailwind blue as `primary`,
+        // (Smart Assist / Vite+React) - plain Tailwind blue as `primary`,
         // plain Tailwind slate as `dark`. No invented brand palette.
         primary: {
           50: '#eff6ff',

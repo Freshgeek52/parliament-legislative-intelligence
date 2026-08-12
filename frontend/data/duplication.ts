@@ -32,7 +32,7 @@ export const duplicationOverlaps: DuplicationOverlap[] = [
     similarity: 65,
     overlapType: 'contradictory',
     summary:
-      'The digital governance bill requires an adequacy decision or standard contractual clauses for any cross-border transfer, while the AI governance bill only requires the deploying institution to "verify and document" the source country\'s standards for AI training data — a materially lower bar for the same underlying data flow.',
+      'The digital governance bill requires an adequacy decision or standard contractual clauses for any cross-border transfer, while the AI governance bill only requires the deploying institution to "verify and document" the source country\'s standards for AI training data - a materially lower bar for the same underlying data flow.',
   },
   {
     id: 'dup-4',

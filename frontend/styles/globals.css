@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 @layer base {
-  /* Responsive font sizing — ported from the reference app's index.css */
+  /* Responsive font sizing - ported from the reference app's index.css */
   html {
     font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
     font-size: 14px;
@@ -57,7 +57,7 @@
   }
 }
 
-/* Custom scrollbar — ported from the reference app's index.css */
+/* Custom scrollbar - ported from the reference app's index.css */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;

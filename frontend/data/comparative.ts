@@ -44,7 +44,7 @@ export const comparativeTopics: ComparativeTopic[] = [
       },
     ],
     aiTakeaway:
-      'The draft bill\'s flat 72-hour window is broadly consistent with international practice, but most comparator jurisdictions route notification through a single supervisory authority rather than a newly created, separate body — worth resolving given the existing data protection law already assigns this role elsewhere.',
+      'The draft bill\'s flat 72-hour window is broadly consistent with international practice, but most comparator jurisdictions route notification through a single supervisory authority rather than a newly created, separate body - worth resolving given the existing data protection law already assigns this role elsewhere.',
   },
   {
     id: 'topic-ai-governance',
@@ -83,7 +83,7 @@ export const comparativeTopics: ComparativeTopic[] = [
       },
     ],
     aiTakeaway:
-      'Comparator frameworks increasingly require proactive human oversight for high-risk automated decisions rather than an on-request right — this is consistent with the critical gap already flagged against Article 7 in the Gap & Intent Alignment module.',
+      'Comparator frameworks increasingly require proactive human oversight for high-risk automated decisions rather than an on-request right - this is consistent with the critical gap already flagged against Article 7 in the Gap & Intent Alignment module.',
   },
   {
     id: 'topic-electronic-transactions',

@@ -40,14 +40,14 @@ export const knowledgeBase: KBCollection[] = [
     documents: [
       {
         id: 'hansard-2026-07-08',
-        title: 'Plenary Sitting — Second Reading Debate, 08 July 2026',
+        title: 'Plenary Sitting - Second Reading Debate, 08 July 2026',
         type: 'hansard',
         date: '2026-07-08',
         excerpt: 'Debate on the Draft Law on Digital Governance and Data Protection, focusing on breach notification timelines.',
       },
       {
         id: 'hansard-2026-06-20',
-        title: 'Plenary Sitting — Committee Referral, 20 June 2026',
+        title: 'Plenary Sitting - Committee Referral, 20 June 2026',
         type: 'hansard',
         date: '2026-06-20',
         excerpt: 'Referral of the Draft Law on Artificial Intelligence Governance and Accountability to the ICT Committee.',
@@ -67,7 +67,7 @@ export const knowledgeBase: KBCollection[] = [
       },
       {
         id: 'report-oversight-2026-06',
-        title: 'Oversight Unit Quality Note — AI Governance Bill',
+        title: 'Oversight Unit Quality Note - AI Governance Bill',
         type: 'committee_report',
         date: '2026-06-15',
         excerpt: 'Quality assurance note flagging vague phrasing in the human-review provisions of the AI governance bill.',

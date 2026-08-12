@@ -1,4 +1,4 @@
-# Backend — Legislative Intelligence API
+# Backend: Legislative Intelligence API
 
 Real-data backend for the Parliament platform. Replaces the frontend's mock
 data with (a) the **actual corpus of Rwandan laws in force** scraped from
@@ -16,7 +16,7 @@ model-agnostic **Neural Bridge**.
 | `localStorage` audit log | File-backed audit trail logging every AI action |
 
 Draft bills remain illustrative samples (draft bills are internal pre-tabling
-documents, not published on amategeko.gov.rw) — but every analysis runs them
+documents, not published on amategeko.gov.rw), but every analysis runs them
 against the **real** law corpus.
 
 ## Layout
@@ -81,7 +81,7 @@ The portal is a React SPA backed by a public read-only API at
 `https://apis.amategeko.gov.rw/v1/site`. Key findings (reverse-engineered from
 the site's JS bundle and network traffic):
 
-- `GET /documents/table?start=&length=&section=1.1` — paginates all laws in
+- `GET /documents/table?start=&length=&section=1.1`, paginates all laws in
   force (section 1.1). Rich metadata per law: title, number, date, category,
   institution, available languages, cross-references.
 - PDFs: recent (2026) laws are served by `POST /files/download` (form field
@@ -89,7 +89,7 @@ the site's JS bundle and network traffic):
   (`files.amategeko.gov.rw`) behind client-side presigned URLs**. So
   `download_pdfs_browser.py` drives the real viewer with Playwright
   (`/view/toc/doc/{document_id}/{fileId}`) and intercepts the signed PDF
-  response — this is what makes a multi-year corpus reachable.
+  response, this is what makes a multi-year corpus reachable.
 - Gazette PDFs are **three parallel columns** (Kinyarwanda | English | French).
   `extract_text.py` detects column gutters from the glyph-occupancy histogram,
   extracts each column separately, identifies its language by stop-word

@@ -11,7 +11,7 @@ export const seedAuditLog: AuditEntry[] = [
     actorRole: 'legal_drafter',
     module: 'Gap & Intent Alignment',
     action: 'Suggestion accepted',
-    target: 'Bill: Digital Governance and Data Protection — Article 5',
+    target: 'Bill: Digital Governance and Data Protection - Article 5',
     details: 'Accepted suggested fix for vague consent mechanism wording.',
   },
   {
@@ -41,7 +41,7 @@ export const seedAuditLog: AuditEntry[] = [
     actorRole: 'legal_drafter',
     module: 'Gap & Intent Alignment',
     action: 'Suggestion rejected',
-    target: 'Bill: Digital Governance and Data Protection — Article 21',
+    target: 'Bill: Digital Governance and Data Protection - Article 21',
     details: 'Rejected: committee decided to address via a separate reconciliation amendment.',
   },
   {
@@ -61,7 +61,7 @@ export const seedAuditLog: AuditEntry[] = [
     actorRole: 'legal_drafter',
     module: 'Gap & Intent Alignment',
     action: 'Suggestion accepted',
-    target: 'Bill: AI Governance and Accountability — Article 11',
+    target: 'Bill: AI Governance and Accountability - Article 11',
     details: 'Accepted alignment of cross-border AI training data standard.',
   },
   {
@@ -81,7 +81,7 @@ export const seedAuditLog: AuditEntry[] = [
     actorRole: 'oversight_unit',
     module: 'Audit Trail',
     action: 'Weekly quality review exported',
-    target: 'All modules — 14–18 July 2026',
+    target: 'All modules - 14–18 July 2026',
     details: undefined,
   },
   {
@@ -101,7 +101,7 @@ export const seedAuditLog: AuditEntry[] = [
     actorRole: 'legal_drafter',
     module: 'Gap & Intent Alignment',
     action: 'Comment added',
-    target: 'Bill: Digital Governance and Data Protection — Article 14',
+    target: 'Bill: Digital Governance and Data Protection - Article 14',
     details: "Comment: 'Flagging for penalties chapter cross-reference before next markup.'",
   },
   {
@@ -141,7 +141,7 @@ export const seedAuditLog: AuditEntry[] = [
     actorRole: 'mp',
     module: 'Gap & Intent Alignment',
     action: 'Suggestion accepted',
-    target: 'Bill: Digital Governance and Data Protection — Article 5',
+    target: 'Bill: Digital Governance and Data Protection - Article 5',
     details: 'Accepted on behalf of sponsoring committee.',
   },
 ];

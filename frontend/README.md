@@ -1,7 +1,7 @@
-# Parliament AI System (Legislative Intelligence) — Frontend
+# Parliament AI System (Legislative Intelligence): Frontend
 
 A polished, buildable **mock-data demo frontend** for the Parliament AI System, built for the Parliament of Rwanda
-with MINICT/RISA as the technology partner. There is no real backend — every list, chat answer, similarity score
+with MINICT/RISA as the technology partner. There is no real backend, every list, chat answer, similarity score
 and audit entry is illustrative mock data intended to demonstrate the product experience.
 
 This is a Next.js 14 (Pages Router) + TypeScript + Tailwind CSS application, matching the engineering conventions
@@ -19,17 +19,17 @@ The Parliament AI System has four core AI capabilities. Each has a dedicated pag
 | Duplication Detection | `/duplication` | **Capability 2.** Bill selector, list of detected overlaps with similarity scores and overlap type (duplicate / contradictory / redundant / overlapping), and a side-by-side clause comparison view. |
 | Gap, Inconsistency & Intent Alignment | `/gaps` | **Capability 3.** Annotated bill-text reading view with inline severity markers, plus a side panel of flagged issues (critical / moderate / minor) with Accept / Reject / Comment actions. |
 | Comparative Legislation | `/comparative` | **Capability 4.** Topic/bill selector plus a comparison card grid against four other countries' equivalent provisions, with a short AI-generated takeaway. The Kinyarwanda / English / French language switcher (in the top bar, and on the login screen) is part of this same capability area and works across every page. |
-| Audit Trail | `/audit` | Every accept / reject / comment action taken on the Duplication Detection and Gap & Intent Alignment pages is logged (via `localStorage`) and shown here alongside seeded historical entries — who, what module, what action, when. |
+| Audit Trail | `/audit` | Every accept / reject / comment action taken on the Duplication Detection and Gap & Intent Alignment pages is logged (via `localStorage`) and shown here alongside seeded historical entries, who, what module, what action, when. |
 
 **Human-in-the-loop by design:** nothing in this demo auto-edits a bill's legal text. Accepting or rejecting an
-AI-flagged issue only updates its review status and writes an audit log entry — the underlying bill text is
+AI-flagged issue only updates its review status and writes an audit log entry, the underlying bill text is
 untouched, and a "human review required" note is shown throughout the Gap & Intent Alignment and Duplication
 Detection pages.
 
 ## Tech stack
 
 - **Next.js 14** (Pages Router) + **TypeScript** (strict mode)
-- **Tailwind CSS** — deep navy/indigo brand color, warm gold accent, warm off-white page background, and dedicated
+- **Tailwind CSS**, deep navy/indigo brand color, warm gold accent, warm off-white page background, and dedicated
   red/orange/blue severity colors for the gap-analysis feature (see `tailwind.config.js`)
 - **Lucide React** for icons
 - **Recharts** for the dashboard's pending-issues-by-severity chart
@@ -45,7 +45,7 @@ npm install
 npm run dev
 ```
 
-Then open http://localhost:3000 — you'll be redirected to the login screen.
+Then open http://localhost:3000, you'll be redirected to the login screen.
 
 ## Signing in (mock auth)
 

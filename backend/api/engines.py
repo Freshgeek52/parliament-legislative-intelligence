@@ -73,7 +73,7 @@ def assistant_answer(store: Store, query: str, lang: str = "en",
         {
             "billId": store.law_frontend_id(h["law_id"]),
             "billTitle": h["law_title"],
-            "articleNumber": h["article"] or "—",
+            "articleNumber": h["article"] or "-",
             "excerpt": _excerpt(h["text"]),
         }
         for h in hits[:4] if h["kind"] == "article"
@@ -103,7 +103,7 @@ def assistant_answer(store: Store, query: str, lang: str = "en",
 
     if available():
         context = "\n\n".join(
-            f"[{i+1}] {h['law_title']} — Article {h['article']}: {_excerpt(h['text'], 600)}"
+            f"[{i+1}] {h['law_title']} - Article {h['article']}: {_excerpt(h['text'], 600)}"
             for i, h in enumerate(hits[:6])
         )
         user = f"Question: {query}\n\nExcerpts from Rwandan law:\n{context}\n\nAnswer, citing [n]."
@@ -176,7 +176,7 @@ def duplication_for_draft(store: Store, draft: dict, threshold: float = 0.30,
                 "draftArticleHeading": art["heading"],
                 "draftArticleText": art["text"],
                 "matchedBillId": store.law_frontend_id(h["law_id"]),
-                "matchedArticleNumber": h["article"] or "—",
+                "matchedArticleNumber": h["article"] or "-",
                 "matchedLawTitle": h["law_title"],
                 "matchedArticleText": h["text"],
                 "matchedExcerpt": _excerpt(h["text"], 220),
@@ -248,7 +248,7 @@ def gaps_for_draft(store: Store, draft: dict) -> dict:
 
     for art in draft["articles"]:
         pid = f"{draft['id']}-p-{art['number']}"
-        para_text = f"Article {art['number']} — {art['heading']}: {art['text']}"
+        para_text = f"Article {art['number']} - {art['heading']}: {art['text']}"
         issue_ids: list[str] = []
 
         related = store.search(f"{art['heading']} {art['text']}", k=3, lang="en",

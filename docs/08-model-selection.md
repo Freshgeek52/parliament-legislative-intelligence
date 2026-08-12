@@ -1,7 +1,7 @@
-# 08 — Model Selection & Rationale
+# 08: Model Selection & Rationale
 
 This document explains **which open-source models the platform uses for which
-task, and why** — with every choice traced to evidence, so the decision is
+task, and why**, with every choice traced to evidence, so the decision is
 auditable rather than a matter of taste. It closes the open question left in
 `03-architecture.md §7` ("no vendor, endpoint or model is specified for Neural
 Bridge").
@@ -21,7 +21,7 @@ directly from the benchmark's published result files:
 The benchmark scores each model on seven tasks per language:
 `translation_from`, `translation_to`, `classification`, `mmlu` (knowledge),
 `arc` (reasoning), `truthfulqa`, `mgsm` (math). Kinyarwanda (`rw`) is the
-binding constraint — English and French are well served by almost every model,
+binding constraint, English and French are well served by almost every model,
 so the platform's model choice is effectively decided by **Kinyarwanda
 performance among open-source models**.
 
@@ -43,7 +43,7 @@ Ranking open-source models by overall Kinyarwanda score:
 The gap is decisive: the **Gemma family and DeepSeek** are in a different
 class on Kinyarwanda than the more familiar Llama / Qwen / Mistral models,
 which score 0.38–0.42 despite strong English. This is the single most
-important finding — picking a model on its English reputation (Llama, Mistral)
+important finding, picking a model on its English reputation (Llama, Mistral)
 would roughly **halve** Kinyarwanda quality.
 
 ## 2. Decisions (task → model)
@@ -65,7 +65,7 @@ different models.
   | MMLU (knowledge) | **1.00** | 0.80 | 1.00 (deepseek-chat) |
   | ARC (reasoning) | **1.00** | 0.90 | 0.90 (deepseek-v4) |
   | classification | 1.00 | **1.00** | 1.00 (several) |
-  | mgsm (math) | **0.667** | — | 0.667 (deepseek-v4) |
+  | mgsm (math) | **0.667** | - | 0.667 (deepseek-v4) |
 
 - **Why not the bigger models?** DeepSeek-v4-flash (158 B) and gpt-oss-120b
   (120 B) score marginally lower on rw overall AND are 4–5× the parameter
@@ -78,7 +78,7 @@ different models.
   proven, widely-available checkpoint (`ollama pull gemma3:27b`) that is still
   **rank 5 overall and tied #1 on rw classification**. The Neural Bridge lets
   us swap one env var (`MODEL_CHAT`) the day Gemma-4 is available on the chosen
-  host — no code change. License matters too: **Gemma-4 is Apache-2.0**, the
+  host, no code change. License matters too: **Gemma-4 is Apache-2.0**, the
   cleanest license for government use.
 
 ### 2.2 Translation (Kinyarwanda ⇄ EN/FR NLP layer, §6) → **DeepSeek-v4-flash**
@@ -99,7 +99,7 @@ different models.
   DeepSeek is the best *writer* of Kinyarwanda. Because the NLP layer's job is
   to **produce** Kinyarwanda output (translate an English law summary into
   Kinyarwanda for display), the writing model wins that task. MIT-licensed and
-  mid-sized (158 B — used via a hosted endpoint for translation, where latency
+  mid-sized (158 B, used via a hosted endpoint for translation, where latency
   matters less than the interactive assistant).
 - **Honest caveat:** all Kinyarwanda translation scores are low in absolute
   terms (0.30–0.40 on the benchmark's BLEU-family proxy). Kinyarwanda machine
@@ -111,12 +111,12 @@ different models.
 
 - The benchmark covers **generation**, not embeddings, so it does not name an
   embedding model. Rather than pick one unevidenced, the retrieval layer today
-  is **BM25** (lexical, `api/store.py`) — zero-dependency, fully self-hostable,
+  is **BM25** (lexical, `api/store.py`), zero-dependency, fully self-hostable,
   and language-agnostic, so it works across all three languages immediately.
 - The `Store.search` interface is deliberately provider-agnostic. When an
   embedding model is added, the natural choice is **BAAI/BGE-M3**: it is
   multilingual (100+ languages incl. Kinyarwanda), open (MIT), and designed for
-  hybrid lexical+dense retrieval — it slots behind the same interface without
+  hybrid lexical+dense retrieval, it slots behind the same interface without
   touching route code. This is the documented next step, not a silent gap.
 
 ## 3. Why open-source at all (beyond the requirement)
@@ -124,7 +124,7 @@ different models.
 The requirement asked for open-source; the architecture *needs* it:
 `NFR-1` forbids parliamentary data being used to train third-party models, and
 `§8` requires an on-prem path with no vendor lock-in. Open-weight models behind
-the Neural Bridge abstraction satisfy both — the same Gemma/DeepSeek
+the Neural Bridge abstraction satisfy both, the same Gemma/DeepSeek
 checkpoints can run on OpenRouter today (fast demo) and on a Parliament-owned
 GPU tomorrow (`ollama`), selected by one env var, with **identical model
 behaviour** either way.
@@ -142,8 +142,8 @@ OLLAMA_MODEL_CHAT    = gemma3:27b # if provider=ollama (self-hosted)
 ```
 
 With `provider=none` (default, no key required) every engine falls back to a
-**grounded, retrieval-only** result — extractive assistant answers, rule-based
-gap flags, TF-IDF duplication — so the platform is fully functional and
+**grounded, retrieval-only** result, extractive assistant answers, rule-based
+gap flags, TF-IDF duplication, so the platform is fully functional and
 demonstrable **without any model API**, and only gets *better* (not
 *different*) when a model is configured. This directly honours the "ungrounded
 output is blocked" constraint: generation is an enhancement layered on top of
@@ -155,4 +155,4 @@ retrieval, never a substitute for it.
 |---|---|---|---|
 | Assistant / gaps / summarise | Gemma 3 27B → Gemma 4 31B | `MODEL_CHAT` | #1 open-source on rw knowledge+reasoning; 27–33 B = self-hostable; Apache-2.0 |
 | EN/FR → Kinyarwanda translation | DeepSeek-v4-flash | `MODEL_TRANSLATE` | #1 open-source at *writing* Kinyarwanda; MIT |
-| Retrieval / embeddings | BM25 → BGE-M3 | — | benchmark doesn't score embeddings; BM25 self-hostable now, BGE-M3 multilingual next |
+| Retrieval / embeddings | BM25 → BGE-M3 | - | benchmark doesn't score embeddings; BM25 self-hostable now, BGE-M3 multilingual next |
