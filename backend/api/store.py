@@ -24,10 +24,40 @@ DATA = Path(__file__).resolve().parent.parent / "data"
 
 TOKEN_RE = re.compile(r"[\w']+", re.UNICODE)
 
+# Question words, articles and generic legal filler in the three system
+# languages. Dropping these from a QUERY keeps ranking focused on the
+# meaningful terms, so "What does the law say about cyber security?" ranks on
+# "cyber security" rather than being diluted by "what/does/the/law/say/about".
+# (The index itself is not filtered; this only affects query terms.)
+STOPWORDS = {
+    # English
+    "what", "does", "do", "did", "the", "a", "an", "is", "are", "was", "were",
+    "of", "to", "in", "for", "on", "at", "by", "and", "or", "as", "with", "from",
+    "say", "says", "said", "about", "tell", "me", "more", "this", "that", "these",
+    "those", "law", "laws", "how", "when", "where", "which", "who", "whom", "whose",
+    "why", "can", "could", "would", "should", "shall", "will", "please", "give",
+    "explain", "describe", "provide", "regarding", "concerning", "under", "any",
+    "there", "it", "its", "be", "has", "have", "according", "rwandan", "rwanda",
+    # French
+    "que", "dit", "la", "le", "les", "des", "du", "de", "sur", "dans", "pour",
+    "et", "ou", "est", "sont", "quoi", "quel", "quelle", "quels", "quelles",
+    "comment", "quand", "qui", "loi", "lois", "selon", "concernant", "sous",
+    "une", "un", "au", "aux", "avec", "par", "ce", "cette", "dites", "moi",
+    # Kinyarwanda
+    "ni", "ku", "mu", "ya", "wa", "bya", "iki", "izihe", "ese", "uko", "iryo",
+    "itegeko", "amategeko", "cyangwa", "ryerekeye", "kuri", "byerekeye", "urugero",
+    "ese", "bite",
+}
 
-def tokenize(text: str) -> list[str]:
+
+def tokenize(text: str, drop_stop: bool = True) -> list[str]:
     text = unicodedata.normalize("NFKC", text.lower())
-    return [t for t in TOKEN_RE.findall(text) if len(t) > 1 and not t.isdigit()]
+    toks = [t for t in TOKEN_RE.findall(text) if len(t) > 1 and not t.isdigit()]
+    if drop_stop:
+        filtered = [t for t in toks if t not in STOPWORDS]
+        # Never return an empty query: if the text was ALL stopwords, keep them.
+        return filtered or toks
+    return toks
 
 
 class Store:
