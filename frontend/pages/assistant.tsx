@@ -180,10 +180,14 @@ export default function Assistant() {
                   <div className="space-y-0.5 mt-1">
                     {collection.documents.map((doc) => {
                       const checked = selectedDocs.has(doc.id);
+                      const titleOnly = doc.hasFullText === false;
                       return (
                         <button
                           key={doc.id}
                           onClick={() => toggleDoc(doc.id)}
+                          title={titleOnly
+                            ? 'Metadata only: this law can be found by title, but its full text is not indexed, so the assistant cannot quote its articles.'
+                            : 'Full text indexed: the assistant can quote specific articles from this law.'}
                           className="w-full flex items-start gap-2 px-2 py-1.5 rounded-md hover:bg-gray-50 text-left"
                         >
                           {checked ? (
@@ -191,7 +195,27 @@ export default function Assistant() {
                           ) : (
                             <Square className="w-4 h-4 text-gray-300 flex-shrink-0 mt-0.5" />
                           )}
-                          <span className="text-xs text-gray-700 leading-snug">{doc.title}</span>
+                          <span className="min-w-0 flex-1">
+                            <span className="block text-xs text-gray-700 leading-snug">{doc.title}</span>
+                            <span
+                              className={cn(
+                                'mt-0.5 inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[10px] font-medium',
+                                titleOnly
+                                  ? 'bg-gray-100 text-gray-500'
+                                  : 'bg-green-50 text-green-700'
+                              )}
+                            >
+                              {titleOnly ? (
+                                <>
+                                  <FileText className="w-2.5 h-2.5" /> Title only
+                                </>
+                              ) : (
+                                <>
+                                  <CheckSquare className="w-2.5 h-2.5" /> Full text
+                                </>
+                              )}
+                            </span>
+                          </span>
                         </button>
                       );
                     })}

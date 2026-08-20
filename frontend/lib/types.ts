@@ -33,6 +33,7 @@ export interface KBDocument {
   refId?: string;
   date?: string;
   excerpt?: string;
+  hasFullText?: boolean; // true = article text ingested (quotable); false = title/metadata only
 }
 
 export interface KBCollection {

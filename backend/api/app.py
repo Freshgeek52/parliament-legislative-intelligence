@@ -105,19 +105,33 @@ def get_bill(bill_id: str, lang: str = "en"):
 
 @app.get("/api/knowledge-base")
 def knowledge_base():
-    """KB collections built from the real corpus + drafts."""
+    """KB collections built from the real corpus + drafts.
+
+    Each law carries hasFullText: laws whose full text has been ingested can be
+    quoted article-by-article; the rest are searchable by title/metadata only.
+    Full-text laws are listed first so they are easy to pick.
+    """
     store = get_store()
+    # Keep all full-text laws first, then fill up to 400 with metadata-only laws.
+    full = [l for l in store.catalog if l["id"] in store.corpus]
+    rest = [l for l in store.catalog if l["id"] not in store.corpus]
+    rest.sort(key=lambda l: l.get("date") or "", reverse=True)
+    ordered = full + rest[: max(0, 400 - len(full))]
     laws_docs = [{
         "id": f"kb-law-{l['id']}", "title": l["title"], "type": "law",
         "refId": store.law_frontend_id(l["id"]), "date": l.get("date"),
         "excerpt": l.get("category"),
-    } for l in store.catalog[:400]]
+        "hasFullText": l["id"] in store.corpus,
+    } for l in ordered]
     bills_docs = [{
         "id": f"kb-{d['id']}", "title": d["title"], "type": "bill",
         "refId": d["id"], "date": d.get("lastUpdated"), "excerpt": d.get("summary"),
+        "hasFullText": True,
     } for d in store.drafts]
     return {"collections": [
-        {"id": "kb-laws", "name": "Laws in force (amategeko.gov.rw)", "documents": laws_docs},
+        {"id": "kb-laws",
+         "name": f"Laws in force ({len(full)} with full text)",
+         "documents": laws_docs},
         {"id": "kb-bills", "name": "Draft bills", "documents": bills_docs},
     ]}
 
