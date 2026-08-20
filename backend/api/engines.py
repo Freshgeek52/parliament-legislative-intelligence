@@ -67,8 +67,10 @@ def assistant_answer(store: Store, query: str, lang: str = "en",
             "model": "assistant",
         }
 
-    hits = store.search(query, k=6, lang=lang, law_ids=law_ids,
-                        kinds=("article",)) or store.search(query, k=6, law_ids=law_ids)
+    # Only article-level chunks carry quotable text; title chunks are just the
+    # law name (for laws outside the full-text subset). Keep them separate so we
+    # never turn a title-only match into a fake "Article None" answer.
+    article_hits = store.search(query, k=6, lang=lang, law_ids=law_ids, kinds=("article",))
     citations = [
         {
             "billId": store.law_frontend_id(h["law_id"]),
@@ -76,10 +78,40 @@ def assistant_answer(store: Store, query: str, lang: str = "en",
             "articleNumber": h["article"] or "-",
             "excerpt": _excerpt(h["text"]),
         }
-        for h in hits[:4] if h["kind"] == "article"
+        for h in article_hits[:4]
     ]
 
-    if not hits:
+    if not article_hits:
+        # The law(s) may exist in the catalogue but their full text is not in the
+        # indexed subset. Say that honestly rather than inventing an article.
+        title_hits = store.search(query, k=4, law_ids=law_ids, kinds=("title",))
+        if title_hits:
+            names = []
+            for h in title_hits[:3]:
+                meta = h["law_title"]
+                if h.get("date"):
+                    meta += f" ({h['date']})"
+                names.append(meta)
+            joined = "; ".join(names)
+            title_only = {
+                "en": (f"That law is in the register of laws in force ({joined}), but its "
+                       "full text has not been indexed yet, so I cannot quote specific "
+                       "articles from it. I can only cite article text for laws whose full "
+                       "text has been ingested. You can open the law directly on "
+                       "amategeko.gov.rw, or ask me about a law that has full text indexed."),
+                "fr": (f"Cette loi figure dans le registre des lois en vigueur ({joined}), "
+                       "mais son texte integral n'est pas encore indexe, je ne peux donc pas "
+                       "en citer d'articles precis. Je ne peux citer le texte d'articles que "
+                       "pour les lois dont le texte integral a ete integre. Vous pouvez ouvrir "
+                       "la loi sur amategeko.gov.rw."),
+                "rw": (f"Iryo tegeko riri ku rutonde rw'amategeko akurikizwa ({joined}), ariko "
+                       "umwandiko waryo wuzuye ntabwo urashyirwa mu bubiko, bityo sinshobora "
+                       "kuvuga ingingo zaryo. Nshobora gusa kuvuga ingingo z'amategeko afite "
+                       "umwandiko wuzuye. Ushobora gufungura itegeko kuri amategeko.gov.rw."),
+            }
+            return {"text": title_only.get(lang, title_only["en"]),
+                    "citations": [], "grounded": True, "model": "retrieval-only"}
+
         no_hit = {
             "en": ("I could not find a matching provision in the indexed Rwandan laws "
                    "in force. Try rephrasing with the legal terms you are looking for "
@@ -104,7 +136,7 @@ def assistant_answer(store: Store, query: str, lang: str = "en",
     if available():
         context = "\n\n".join(
             f"[{i+1}] {h['law_title']} - Article {h['article']}: {_excerpt(h['text'], 600)}"
-            for i, h in enumerate(hits[:6])
+            for i, h in enumerate(article_hits[:6])
         )
         user = f"Question: {query}\n\nExcerpts from Rwandan law:\n{context}\n\nAnswer, citing [n]."
         try:
@@ -118,8 +150,8 @@ def assistant_answer(store: Store, query: str, lang: str = "en",
         except BridgeUnavailable:
             pass
 
-    # Extractive fallback: stitch the top passages into a grounded answer.
-    top = hits[0]
+    # Extractive fallback: stitch the top article passages into a grounded answer.
+    top = article_hits[0]
     lead = {
         "en": "Based on the laws currently in force, the most relevant provision is",
         "fr": "D'après les lois en vigueur, la disposition la plus pertinente est",
