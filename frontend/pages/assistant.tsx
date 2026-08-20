@@ -47,6 +47,12 @@ export default function Assistant() {
     api.knowledgeBase().then(setKnowledgeBase);
   }, []);
 
+  // How many documents can actually be quoted (full text ingested). This is the
+  // effective default search scope when nothing is ticked.
+  const fullTextCount = knowledgeBase
+    .flatMap((c) => c.documents)
+    .filter((d) => d.hasFullText !== false).length;
+
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' });
   }, [messages, isTyping]);
@@ -156,7 +162,7 @@ export default function Assistant() {
             <h2 className="text-sm font-semibold text-gray-900">{t('assistant.knowledgeBase')}</h2>
             <p className="text-xs text-gray-500 mt-0.5">
               {selectedDocs.size === 0
-                ? 'Searching all laws in force'
+                ? `Searching all ${fullTextCount} full-text laws and bills by default. No need to tick anything; tick items only to narrow the search.`
                 : `Scoped to ${selectedDocs.size} ${t('assistant.documentsSelected')}`}
             </p>
             {selectedDocs.size > 0 && (
